@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connectWallet, getAccounts } from '../../services/web3'; // Import from web3 service
+import { connectWallet, getAccounts } from '../../services/web3';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
@@ -7,13 +7,14 @@ function Auth() {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState('');
   const [role, setRole] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Error message state
   const navigate = useNavigate();
 
   const fetchAccounts = async () => {
-    const { accounts } = await connectWallet(); // Use the connectWallet function
+    const { accounts } = await connectWallet();
     if (accounts) {
       setAccounts(accounts);
-      setSelectedAccount(accounts[0]); // Set the first account as selected
+      setSelectedAccount(accounts[0]);
     }
   };
 
@@ -22,6 +23,16 @@ function Auth() {
       alert('Please select an account and role to continue');
       return;
     }
+
+    // Check for conflicting roles
+    const storedRole = localStorage.getItem(selectedAccount);
+    if (storedRole && storedRole !== role) {
+      setErrorMessage(`This account is already registered as a ${storedRole}.`);
+      return;
+    }
+
+    // Save account and role if there's no conflict
+    localStorage.setItem(selectedAccount, role);
     localStorage.setItem('selectedAccount', selectedAccount);
     localStorage.setItem('role', role);
 
@@ -33,13 +44,19 @@ function Auth() {
   };
 
   useEffect(() => {
-    fetchAccounts(); // Fetch accounts on mount
+    fetchAccounts();
   }, []);
 
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login with MetaMask</h2>
+        
+        {errorMessage && (
+          <div className="auth-error">
+            {errorMessage}
+          </div>
+        )}
 
         <div className="auth-field">
           <label>Choose Account:</label>
@@ -76,4 +93,3 @@ function Auth() {
 }
 
 export default Auth;
-
