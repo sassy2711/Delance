@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connectWallet, getAccounts } from '../../services/web3';
+import { getAccounts } from '../../services/web3'; // Import getAccounts instead of connectWallet
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
@@ -11,7 +11,7 @@ function Auth() {
   const navigate = useNavigate();
 
   const fetchAccounts = async () => {
-    const { accounts } = await connectWallet();
+    const accounts = await getAccounts(); // Use getAccounts for fetching accounts
     if (accounts) {
       setAccounts(accounts);
       setSelectedAccount(accounts[0]);
