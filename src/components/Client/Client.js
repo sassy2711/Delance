@@ -1,11 +1,16 @@
-// delance/src/components/Client.js
-
+// src/components/Client/Client.js
 import React, { useEffect, useState } from 'react';
-import { connectWallet } from '../../services/web3'; // Import your connectWallet function
+import { addProject, getBalance } from '../../services/web3';
+import { useNavigate } from 'react-router-dom';
 
 function Client() {
   const [selectedAccount, setSelectedAccount] = useState('');
   const [balance, setBalance] = useState('');
+  const [projectName, setProjectName] = useState('');
+  const [projectDescription, setProjectDescription] = useState('');
+  const [projectBudget, setProjectBudget] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const account = localStorage.getItem('selectedAccount');
@@ -16,11 +21,34 @@ function Client() {
   }, []);
 
   const fetchBalance = async (account) => {
-    const { web3 } = await connectWallet(); // Use your web3 function
-    if (web3) {
-      const balance = await web3.eth.getBalance(account); // Fetch account balance
-      setBalance(web3.utils.fromWei(balance, 'ether')); // Convert from Wei to Ether
+    const balance = await getBalance(account);
+    if (balance) {
+      setBalance(balance);
     }
+  };
+
+  const handleAddProject = async (e) => {
+    e.preventDefault();
+    if (!projectName || !projectDescription || !projectBudget) {
+      alert("Please fill in all project details.");
+      return;
+    }
+
+    try {
+      await addProject(projectName, projectDescription, projectBudget, selectedAccount);
+      setStatusMessage("Project added successfully!");
+      setProjectName('');
+      setProjectDescription('');
+      setProjectBudget('');
+    } catch (error) {
+      console.error("Error adding project:", error);
+      setStatusMessage("Failed to add project. Please try again.");
+    }
+  };
+
+  const handleViewProjects = () => {
+    // Pass selectedAccount through state
+    navigate('/client/projects', { state: { selectedAccount } });
   };
 
   return (
@@ -28,7 +56,41 @@ function Client() {
       <h2>Client Dashboard</h2>
       {selectedAccount && <p>Connected Account: {selectedAccount}</p>}
       {balance && <p>Account Balance: {balance} ETH</p>}
-      {/* Add more client-specific content here */}
+
+      <h3>Add a New Project</h3>
+      <form onSubmit={handleAddProject}>
+        <div>
+          <label>Project Name:</label>
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Project Description:</label>
+          <textarea
+            value={projectDescription}
+            onChange={(e) => setProjectDescription(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Project Budget (in ETH):</label>
+          <input
+            type="number"
+            value={projectBudget}
+            onChange={(e) => setProjectBudget(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Add Project</button>
+      </form>
+
+      {statusMessage && <p>{statusMessage}</p>}
+
+      <button onClick={handleViewProjects}>View Projects</button>
     </div>
   );
 }
