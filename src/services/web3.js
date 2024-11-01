@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json'
-const PROJECTS_CONTRACT_ADDRESS = '0x9B2Fe4Cc8b5464a418FD0B77530d00050bC2c132';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0x100CAB3ad1A74f26BC64a045F0EEb8616d856964'
+const PROJECTS_CONTRACT_ADDRESS = '0x90df1317237267f717E1B251442702BA1B655b6A';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xB1AC5840645273819522df32f79c83A3A307443f'
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -283,6 +283,42 @@ export const sendRequest = async (projectId, freelancerRating, freelancerAddress
   }
 };
 
+export const fetchRequestsByProjectId = async (projectId) => { 
+  console.log("Project ID:", projectId);
+  try {
+    console.log("Step 1: Getting contract instance...");
+    const contract = await getRequestManagerContract(); // Get the instance of the RequestManager contract
+    console.log("Step 2: Calling viewAllRequests...");
+
+    // Call the contract function
+    const result = await contract.methods.viewAllRequests().call();
+    console.log("Step 3: Response received:", result);
+
+    // Destructure the returned arrays to match the Solidity return values
+    const requestIds = result[0];
+    const projectIds = result[1];
+    const freelancers = result[2];
+    const freelancerRatings = result[3];
+    const statuses = result[4];
+    const escrowContracts = result[5];
+    console.log("4");
+    // Map the requests into an array of objects and filter by projectId
+    const statusEnum = ["Pending", "Approved", "Rejected"];
+    const filteredRequests = requestIds.map((id, index) => ({
+      requestId: id.toString(),
+      projectId: projectIds[index].toString(),
+      freelancer: freelancers[index],
+      freelancerRating: freelancerRatings[index].toString(),
+      status: statusEnum[statuses[index]], // Assuming you want to keep the enum or convert it to a string
+      escrowContract: escrowContracts[index], // This can be an address or object based on your requirements
+    })).filter(request => request.projectId === projectId.toString()); // Filter by projectId
+    
+    return filteredRequests; // Return the filtered array of requests
+  } catch (error) {
+    console.error("Error fetching requests by project ID:", error);
+    throw error; // Re-throw the error for further handling if needed
+  }
+};
 
 
 

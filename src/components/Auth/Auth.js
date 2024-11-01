@@ -41,11 +41,16 @@ function Auth() {
       }
     }
     else if (storedRole){
+      // Save account and role if there's no conflict
+      localStorage.setItem(selectedAccount, role);
+      localStorage.setItem('selectedAccount', selectedAccount);
+      localStorage.setItem('role', role);
       if(storedRole !== role) {
         setErrorMessage(`This account is already registered as a ${storedRole}.`);
         return;
       }
       else{
+
         if (role === 'client') {
           navigate('/client');
         } else if (role === 'freelancer') {
