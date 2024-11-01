@@ -1,11 +1,13 @@
-// delance/src/components/Freelancer.js
+// // delance/src/components/Freelancer.js
 
 import React, { useEffect, useState } from 'react';
 import { connectWallet } from '../../services/web3'; // Import your connectWallet function
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 function Freelancer() {
   const [selectedAccount, setSelectedAccount] = useState('');
   const [balance, setBalance] = useState('');
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   useEffect(() => {
     const account = localStorage.getItem('selectedAccount');
@@ -23,11 +25,17 @@ function Freelancer() {
     }
   };
 
+  // Function to navigate to the FreelancerProjectsPage
+  const handleViewProjects = () => {
+    navigate('/freelancer/projects', { state: { selectedAccount } }); // Pass selectedAccount in state
+  };
+
   return (
     <div>
       <h2>Freelancer Dashboard</h2>
       {selectedAccount && <p>Connected Account: {selectedAccount}</p>}
       {balance && <p>Account Balance: {balance} ETH</p>}
+      <button onClick={handleViewProjects}>View Projects</button> {/* Button to view projects */}
       {/* Add more freelancer-specific content here */}
     </div>
   );

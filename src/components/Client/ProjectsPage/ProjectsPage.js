@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { fetchUserProjects } from '../../services/web3';
-import ProjectCard from '../ProjectCard/ProjectCard';
+import { fetchUserProjects } from '../../../services/web3';
+import ProjectCard from './ProjectCard/ProjectCard';
 import { useLocation } from 'react-router-dom';
 
-function ProjectsPage() {
+function ClientProjectsPage() {
   const [projects, setProjects] = useState([]);
   const location = useLocation();
   const { selectedAccount } = location.state || {}; // Retrieve selected account if passed
@@ -26,6 +26,7 @@ function ProjectsPage() {
         projects.map((project, index) => (
           <ProjectCard
             key={index}
+            projectId={project.id}  // Pass project ID to ProjectCard
             title={project.title}
             description={project.description}
             reward={project.reward}
@@ -40,4 +41,4 @@ function ProjectsPage() {
   );
 }
 
-export default ProjectsPage;
+export default ClientProjectsPage;

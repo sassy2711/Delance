@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAccounts } from '../../services/web3'; // Import getAccounts instead of connectWallet
+import { getAccounts, setFreelancerRating } from '../../services/web3'; // Import getAccounts instead of connectWallet
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
@@ -26,21 +26,35 @@ function Auth() {
 
     // Check for conflicting roles
     const storedRole = localStorage.getItem(selectedAccount);
-    if (storedRole && storedRole !== role) {
-      setErrorMessage(`This account is already registered as a ${storedRole}.`);
-      return;
+
+    if(!storedRole){
+      // Save account and role if there's no conflict
+      localStorage.setItem(selectedAccount, role);
+      localStorage.setItem('selectedAccount', selectedAccount);
+      localStorage.setItem('role', role);
+
+      if (role === 'client') {
+        navigate('/client');
+      } else if (role === 'freelancer') {
+        setFreelancerRating(selectedAccount, 0);
+        navigate('/freelancer');
+      }
+    }
+    else if (storedRole){
+      if(storedRole !== role) {
+        setErrorMessage(`This account is already registered as a ${storedRole}.`);
+        return;
+      }
+      else{
+        if (role === 'client') {
+          navigate('/client');
+        } else if (role === 'freelancer') {
+          navigate('/freelancer');
+        }
+      }
     }
 
-    // Save account and role if there's no conflict
-    localStorage.setItem(selectedAccount, role);
-    localStorage.setItem('selectedAccount', selectedAccount);
-    localStorage.setItem('role', role);
-
-    if (role === 'client') {
-      navigate('/client');
-    } else if (role === 'freelancer') {
-      navigate('/freelancer');
-    }
+    
   };
 
   useEffect(() => {

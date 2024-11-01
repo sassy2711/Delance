@@ -1,7 +1,8 @@
 import Web3 from 'web3';
-import ProjectsContract from '../contracts/Projects.json'; // Assuming ABI is saved as Projects.json
-
-const PROJECTS_CONTRACT_ADDRESS = '0xA146CE52eD7884E2FaD3aAf054dC1a8Bd4BC9c06';
+import ProjectsContract from '../contracts/Projects.json'; 
+import RequestManagerContract from '../contracts/RequestManager.json'
+const PROJECTS_CONTRACT_ADDRESS = '0x9B2Fe4Cc8b5464a418FD0B77530d00050bC2c132';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0x100CAB3ad1A74f26BC64a045F0EEb8616d856964'
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -45,6 +46,15 @@ export const getProjectsContract = async () => {
   const { web3 } = await connectWallet();
   if (web3) {
     return new web3.eth.Contract(ProjectsContract.abi, PROJECTS_CONTRACT_ADDRESS);
+  }
+  return null;
+};
+
+// Initialize RequestManager contract instance
+export const getRequestManagerContract = async () => {
+  const { web3 } = await connectWallet();
+  if (web3) {
+    return new web3.eth.Contract(RequestManagerContract.abi, REQUEST_MANAGER_CONTRACT_ADDRESS);
   }
   return null;
 };
@@ -106,8 +116,8 @@ export const fetchAllProjects = async () => {
 // src/services/web3.js
 // src/services/web3.js
 export const fetchUserProjects = async (selectedAccount) => {
-  console.log(selectedAccount);
-  console.log(1);
+  //console.log(selectedAccount);
+  //console.log(1);
   try {
     const contract = await getProjectsContract();
     if (!contract) {
@@ -144,33 +154,135 @@ export const fetchUserProjects = async (selectedAccount) => {
   }
 };
 
-
-
-export const fetchAndPrintProjects = async () => {
-  console.log("fetchAndPrintProjects called"); // Add this to check
+export async function addMilestone(projectId, name, description, daycount, percentage, selectedAccount) {
   try {
-    // Get the contract instance
-    const contract = await getProjectsContract();
-
+    const contract = await getProjectsContract(); // Await the contract instance
+    
     if (!contract) {
-      console.error("Contract not found. Ensure you are connected to the correct network.");
+      console.error("Contract instance not initialized");
       return;
     }
 
-    // Call the viewProjects function
-    const projectsData = await contract.methods.viewProjects().call();
-    console.log("Raw viewProjects response:", projectsData);
-    // const [ids, names, descriptions, rewards, statuses, employers] = await contract.methods.viewProjects().call();
+    // Debugging logs to verify parameters and account
+    console.log("Parameters: ", { projectId, name, description, daycount, percentage, selectedAccount });
+    console.log("Contract Address: ", contract.options.address);
 
-    // // Print the returned arrays
-    // console.log("Project IDs:", ids);
-    // console.log("Project Names:", names);
-    // console.log("Project Descriptions:", descriptions);
-    // console.log("Project Rewards:", rewards);
-    // console.log("Project Statuses:", statuses);
-    // console.log("Project Employers:", employers);
-
+    // Call contract method with `send` to trigger the transaction
+    const transaction = await contract.methods.addMilestone(projectId, name, description, daycount, percentage)
+      .send({ from: selectedAccount });
+    
+    console.log("Transaction successful:", transaction);
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error adding milestone:", error);
+  }
+}
+
+export const getMilestones = async (projectId) => {
+  try {
+    const contract = await getProjectsContract();
+    // Call the contract function
+    const result = await contract.methods.getMilestones(projectId).call();
+
+    // Destructure the returned object to match the Solidity return values
+    const ids = result[0];
+    const projectIds = result[1];
+    const names = result[2];
+    const descriptions = result[3];
+    const daycounts = result[4];
+    const percentages = result[5];
+    const completions = result[6];
+    const proofFileHashes = result[7];
+
+    // Map the milestones into an array of objects
+    return ids.map((id, index) => ({
+      id : id.toString(),
+      projectId: projectIds[index],
+      name: names[index],
+      description: descriptions[index],
+      daycount: daycounts[index].toString(),
+      percentage: percentages[index].toString(),
+      completed: completions[index],
+      proofFileHash: proofFileHashes[index],
+    }));
+  } catch (error) {
+    console.error('Error fetching milestones:', error);
+    throw error;
   }
 };
+
+// src/services/web3.js
+
+export const setFreelancerRating = async (freelancerAddress, rating) => {
+  try {
+    const contract = await getProjectsContract();
+    if (!contract) {
+      console.error("Contract not found. Ensure you are connected to the correct network.");
+      return { success: false, message: 'Contract not found.' };
+    }
+
+    // Call the contract method to set the freelancer rating
+    await contract.methods.setFreelancerRating(freelancerAddress, rating).send({ from: freelancerAddress });
+    
+    console.log("Freelancer rating set successfully.");
+    return { success: true, message: 'Freelancer rating set successfully.' };
+  } catch (error) {
+    console.error("Error setting freelancer rating:", error);
+    return { success: false, message: 'Failed to set freelancer rating.' };
+  }
+};
+
+// src/services/web3.js
+
+export const getFreelancerRating = async (freelancerAddress) => {
+  try {
+    const contract = await getProjectsContract();
+    if (!contract) {
+      console.error("Contract not found. Ensure you are connected to the correct network.");
+      return { success: false, message: 'Contract not found.' };
+    }
+
+    // Call the contract method to get the freelancer rating
+    const rating = await contract.methods.getFreelancerRating(freelancerAddress).call();
+
+    console.log(`Freelancer rating: ${rating}`);
+    return { success: true, rating: rating };
+  } catch (error) {
+    console.error("Error getting freelancer rating:", error);
+    return { success: false, message: 'Failed to get freelancer rating.' };
+  }
+};
+
+export const sendRequest = async (projectId, freelancerRating, freelancerAddress) => {
+  try {
+    const requestManagerContract = await getRequestManagerContract();
+    if (!requestManagerContract) {
+      console.error("RequestManager contract not found. Ensure you are connected to the correct network.");
+      return { success: false, message: 'Contract not found.' };
+    }
+
+    // Convert parameters to BigInt
+    const formattedProjectId = Web3.utils.toBigInt(projectId);  // Convert projectId to BigInt
+    const formattedRating = Web3.utils.toBigInt(freelancerRating);  // Convert freelancerRating to BigInt
+
+    console.log("Sending request with:", {
+      projectId: formattedProjectId.toString(),
+      freelancerRating: formattedRating.toString(),
+      from: freelancerAddress,
+    });
+
+    // Call the contract method to send the request
+    await requestManagerContract.methods
+      .sendRequest(formattedProjectId, formattedRating)
+      .send({ from: freelancerAddress });
+
+    console.log("Request sent successfully.");
+    return { success: true, message: 'Request sent successfully.' };
+  } catch (error) {
+    console.error("Error sending request:", error);
+    return { success: false, message: 'Failed to send request.' };
+  }
+};
+
+
+
+
