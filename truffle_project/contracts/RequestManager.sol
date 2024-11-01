@@ -8,20 +8,50 @@ contract Escrow {
     address public employer;
     uint public amount;
 
-    constructor(address _freelancer, address _employer, uint _amount) payable {
+    constructor(address _freelancer, address _employer) payable {
         freelancer = _freelancer;
         employer = _employer;
-        amount = _amount;
+        amount = msg.value; // Set the amount to the value sent during the contract creation
     }
 
     function releaseFunds() external {
         require(msg.sender == employer, "Only the employer can release funds");
+        require(amount > 0, "No funds to release");
         payable(freelancer).transfer(amount);
+        amount = 0; // Set amount to 0 after release
+    }
+
+    function refund() external {
+        require(msg.sender == freelancer, "Only the freelancer can request a refund");
+        require(amount > 0, "No funds to refund");
+        payable(freelancer).transfer(amount);
+        amount = 0; // Set amount to 0 after refund
+    }
+
+    function releaseReducedFunds(uint _reducedAmount) external {
+        require(msg.sender == employer, "Only the employer can release funds");
+        require(amount > 0, "No funds to release");
+        require(_reducedAmount <= amount, "Reduced amount exceeds escrow balance");
+
+        payable(freelancer).transfer(_reducedAmount);
+        amount -= _reducedAmount; // Deduct the paid amount from the total escrow balance
+    }
+
+    function releaseMilestonePayment(uint milestonePercentage, uint delayPenalty) external {
+        // require(msg.sender == employer, "Only the employer can release milestone payments");
+        require(amount > 0, "Insufficient funds in escrow");
+
+        uint milestonePayment = (amount * milestonePercentage) / 100;
+        uint reducedPayment = milestonePayment - ((milestonePayment * delayPenalty) / 100);
+
+        require(reducedPayment <= amount, "Reduced payment exceeds escrow balance");
+
+        payable(freelancer).transfer(reducedPayment);
+        amount -= reducedPayment;
     }
 }
 
 contract RequestManager {
-
     Projects public projectsContract;
 
     enum RequestStatus { Pending, Accepted, Rejected }
@@ -34,11 +64,14 @@ contract RequestManager {
         Escrow escrowContract;
     }
 
+    // Store all requests in a single mapping
     mapping(uint => Request) public requests;
+    uint public requestCount; // To keep track of the total number of requests
 
-    event RequestSent(uint projectId, address freelancer);
-    event RequestAccepted(uint projectId, address freelancer, address escrowContract);
-    event RequestRejected(uint projectId, address freelancer);
+    event RequestSent(uint requestId, uint projectId, address freelancer);
+    event RequestAccepted(uint requestId, address freelancer, address escrowContract);
+    event RequestRejected(uint requestId, address freelancer);
+    event MilestoneAccepted(uint projectId, uint milestoneId, uint updatedRating);
 
     constructor(address _projectsContract) {
         projectsContract = Projects(_projectsContract);
@@ -49,7 +82,9 @@ contract RequestManager {
         (,, , , Projects.Status status, ) = projectsContract.getProject(_projectId);
         require(status == Projects.Status.Open, "Project is not open");
 
-        requests[_projectId] = Request({
+        // Create a new request
+        requestCount++; // Increment request count to create a unique ID
+        requests[requestCount] = Request({
             projectId: _projectId,
             freelancer: msg.sender,
             freelancerRating: _freelancerRating,
@@ -57,39 +92,6 @@ contract RequestManager {
             escrowContract: Escrow(address(0))
         });
 
-        emit RequestSent(_projectId, msg.sender);
-    }
-
-    function acceptRequest(uint _projectId) public payable {
-        require(requests[_projectId].freelancer != address(0), "No request exists for this project");
-        require(requests[_projectId].status == RequestStatus.Pending, "Request already processed");
-
-        (, , , uint reward, Projects.Status status, address employer) = projectsContract.getProject(_projectId);
-        require(status == Projects.Status.Open, "Project must be open");
-        require(msg.sender == employer, "Only the employer can accept this request");
-        require(msg.value == reward, "Incorrect reward amount sent");
-
-        // Create new escrow contract instance with freelancer and employer details
-        Escrow escrow = new Escrow{value: reward}(requests[_projectId].freelancer, employer, reward);
-        requests[_projectId].escrowContract = escrow;
-
-        requests[_projectId].status = RequestStatus.Accepted;
-        emit RequestAccepted(_projectId, requests[_projectId].freelancer, address(escrow));
-    }
-
-    function rejectRequest(uint _projectId) public {
-        require(requests[_projectId].freelancer != address(0), "No request exists for this project");
-        require(requests[_projectId].status == RequestStatus.Pending, "Request already processed");
-
-        (, , , , Projects.Status status, address employer) = projectsContract.getProject(_projectId);
-        require(status == Projects.Status.Open, "Project must be open");
-        require(msg.sender == employer, "Only the employer can reject this request");
-
-        requests[_projectId].status = RequestStatus.Rejected;
-        emit RequestRejected(_projectId, requests[_projectId].freelancer);
-    }
-
-    function getRequest(uint _projectId) public view returns (Request memory) {
-        return requests[_projectId];
+        emit RequestSent(requestCount, _projectId, msg.sender);
     }
 }

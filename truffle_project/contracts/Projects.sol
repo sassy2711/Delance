@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.7;
 
+// import "./RequestManager.sol";
+
 contract Projects {
     
     enum Status { Closed, Open }
@@ -22,16 +24,24 @@ contract Projects {
         uint daycount;
         uint percentage;
         bool completed;
+        string proofFileHash; // To store proof file hash
     }
 
     mapping(uint => Project) public projects;
     mapping(uint => Milestone[]) public milestones;
+    mapping(address => uint) public freelancerRatings; // Map freelancer address to their rating (in basis points out of 5 * 100)
 
     uint public projectCount;
     uint public milestoneCount;
 
+    // RequestManager public requestManager;
+
     event ProjectAdded(uint id, string name, address employer);
     event MilestoneAdded(uint projectId, uint milestoneId, string name, uint percentage);
+    event MilestoneProofUploaded(uint projectId, uint milestoneId, string proofFileHash);
+    // constructor(address _requestManager) {
+    //     requestManager = RequestManager(_requestManager);
+    // }
 
     function addProject(string memory _name, string memory _description, uint _reward) public {
         projectCount++;
@@ -60,10 +70,30 @@ contract Projects {
             description: _description,
             daycount: _daycount,
             percentage: _percentage,
-            completed: false
+            completed: false,
+            proofFileHash: "" // Initialize proof file hash as empty
         }));
 
         emit MilestoneAdded(_projectId, milestoneCount, _name, _percentage);
+    }
+
+    function uploadMilestoneProof(uint _projectId, uint _milestoneId, address _freelancer, string memory _proofFileHash) public {
+        require(_projectId > 0 && _projectId <= projectCount, "Project does not exist");
+        require(msg.sender == _freelancer, "Only the assigned freelancer can upload proof");
+
+        // Check if the milestone exists
+        require(_milestoneId > 0 && _milestoneId <= milestones[_projectId].length, "Invalid milestone ID");
+
+        // Store the proof file hash for the milestone
+        milestones[_projectId][_milestoneId - 1].proofFileHash = _proofFileHash;
+
+        emit MilestoneProofUploaded(_projectId, _milestoneId, _proofFileHash);
+    }
+
+
+
+    function getFreelancerRating(address _freelancer) public view returns (uint) {
+        return freelancerRatings[_freelancer];
     }
 
     function getProject(uint _id) public view returns (uint, string memory, string memory, uint, Status, address) {
@@ -139,9 +169,57 @@ contract Projects {
         return (ids, names, descriptions, rewards, statuses, employers);
     }
 
-    function getMilestones(uint _projectId) public view returns (Milestone[] memory) {
+    function getMilestones(uint _projectId) 
+        public view 
+        returns (
+            uint[] memory ids, 
+            uint[] memory projectIds, 
+            string[] memory names, 
+            string[] memory descriptions, 
+            uint[] memory daycounts, 
+            uint[] memory percentages, 
+            bool[] memory completions, 
+            string[] memory proofFileHashes
+        ) 
+    {
         require(_projectId > 0 && _projectId <= projectCount, "Project does not exist");
-        return milestones[_projectId];
+
+        Milestone[] memory projectMilestones = milestones[_projectId];
+        uint milestonesCount = projectMilestones.length;
+
+        // Initialize arrays for each field in Milestone
+        ids = new uint[](milestonesCount);
+        projectIds = new uint[](milestonesCount);
+        names = new string[](milestonesCount);
+        descriptions = new string[](milestonesCount);
+        daycounts = new uint[](milestonesCount);
+        percentages = new uint[](milestonesCount);
+        completions = new bool[](milestonesCount);
+        proofFileHashes = new string[](milestonesCount);
+
+        // Populate each array with the corresponding data from each milestone
+        for (uint i = 0; i < milestonesCount; i++) {
+            Milestone memory milestone = projectMilestones[i];
+            ids[i] = milestone.id;
+            projectIds[i] = milestone.projectId;
+            names[i] = milestone.name;
+            descriptions[i] = milestone.description;
+            daycounts[i] = milestone.daycount;
+            percentages[i] = milestone.percentage;
+            completions[i] = milestone.completed;
+            proofFileHashes[i] = milestone.proofFileHash;
+        }
+
+        return (
+            ids, 
+            projectIds, 
+            names, 
+            descriptions, 
+            daycounts, 
+            percentages, 
+            completions, 
+            proofFileHashes
+        );
     }
 
     function closeProject(uint _id) public {
@@ -153,19 +231,19 @@ contract Projects {
 
     function completeMilestone(uint _projectId, uint _milestoneId) public {
         require(_projectId > 0 && _projectId <= projectCount, "Project does not exist");
-        require(msg.sender == projects[_projectId].employer, "Only the employer can mark milestones as completed");
-
-        Milestone[] storage projectMilestones = milestones[_projectId];
-        bool found = false;
-
-        for (uint i = 0; i < projectMilestones.length; i++) {
-            if (projectMilestones[i].id == _milestoneId) {
-                projectMilestones[i].completed = true;
-                found = true;
-                break;
-            }
-        }
-
-        require(found, "Milestone does not exist in this project");
+        require(_milestoneId > 0 && _milestoneId <= milestones[_projectId].length, "Milestone does not exist");
+        
+        Milestone storage milestone = milestones[_projectId][_milestoneId - 1];
+        require(!milestone.completed, "Milestone already completed");
+        
+        milestone.completed = true; // Mark the milestone as completed
     }
+
+    function setFreelancerRating(address _freelancer, uint _rating) public {
+        // Ensure only the owner of the contract can set the rating
+        // require(msg.sender == owner, "Only the owner can set the rating"); // Adjust ownership logic as necessary
+        freelancerRatings[_freelancer] = _rating;
+    }
+
+
 }
