@@ -1,8 +1,9 @@
 import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json'
-const PROJECTS_CONTRACT_ADDRESS = '0x5a524BD5cA5084C77820CbB32D2E20cB87BCA64A';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0x52edC03f6eb7Df9ac6986572CE638EFaA7683353'
+import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
+const PROJECTS_CONTRACT_ADDRESS = '0x57A5478e19B1949BBC8c933e390DEf389CCf8FEC';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xcbc7bfD7170785c963Aef781c4DfF7377eD0F708'
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -395,9 +396,123 @@ export async function addFile(milestoneId, name, rid, cid, account) {
       const contract = await getRequestManagerContract();
       // Call the addFile function in the smart contract
       await contract.methods.addFile(milestoneId, name, rid, cid).send({ from: account });
+      await contract.methods.sendMilestoneReviewRequest(milestoneId, cid, account).send({from: account});
       console.log('Transaction successful:');
   } catch (error) {
       console.error('Error calling addFile:', error);
       throw error;
+  }
+};
+
+/**
+ * Downloads all files associated with a specific milestone.
+ * @param {number} milestoneId - The ID of the milestone to retrieve files for.
+ */
+export const downloadFilesForMilestone = async (milestoneId) => {
+  try {
+    console.log("Inside download function");
+    
+    // Call the smart contract function to get all files for the milestone
+    const contract = await getRequestManagerContract();
+    const result = await contract.methods.viewAllFilesForMilestone(milestoneId).call();
+    
+    // Destructure the result
+    const ids = result[0];
+    const names = result[2];
+    const cids = result[4];
+    console.log(`Number of files to download: ${ids.length}`);
+
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    // Iterate through the files and download each one
+    for (let i = 0; i < ids.length; i++) {
+      const cid = cids[i];
+      const filename = names[i] || `downloadedFile_${ids[i]}`; // Use the name, or a default if name is empty
+      await downloadFileFromIPFS(cid, filename);
+      await delay(15000); // Wait before the next download
+      // // Verify if the file exists on IPFS
+      // const response = await verifyIPFSFile(cid);
+      // const { exists } = response; // Destructure to get the 'exists' property
+
+      // if (exists) {
+      //   console.log(`File exists for CID: ${cid}. Proceeding to download...`);
+      //   await downloadFileFromIPFS(cid, filename);
+      //   await delay(15000); // Wait before the next download
+      // } else {
+      //   console.log(`File does not exist for CID: ${cid}. Skipping download.`);
+      // }
+    }
+
+    console.log('All files processed for milestone:', milestoneId);
+  } catch (error) {
+    console.error('Error downloading files for milestone:', error);
+  }
+};
+
+export const fetchMilestoneReviewRequestsByMilestoneId = async (milestoneId) => {
+  console.log("Milestone ID:", milestoneId);
+  try {
+    console.log("Step 1: Getting contract instance...");
+    const contract = await getRequestManagerContract(); // Get the instance of the RequestManager contract
+    console.log("Step 2: Calling viewAllMilestoneReviewRequests...");
+
+    // Call the contract function
+    const result = await contract.methods.viewAllMilestoneReviewRequests().call();
+    console.log("Step 3: Response received:", result);
+
+    // Destructure the returned arrays to match the Solidity return values
+    const requestIds = result[0];
+    const milestoneIds = result[1];
+    const freelancers = result[2];
+    const cids = result[3];
+    const reviewedStatuses = result[4];
+
+    // Map the requests into an array of objects and filter by milestoneId
+    const filteredRequests = requestIds.map((id, index) => ({
+      requestId: id.toString(),
+      milestoneId: milestoneIds[index].toString(),
+      freelancer: freelancers[index],
+      cid: cids[index],
+      reviewed: reviewedStatuses[index],
+    })).filter(request => request.milestoneId === milestoneId.toString()); // Filter by milestoneId
+
+    return filteredRequests; // Return the filtered array of requests
+  } catch (error) {
+    console.error("Error fetching milestone review requests by milestone ID:", error);
+    throw error; // Re-throw the error for further handling if needed
+  }
+};
+
+// Function to accept a milestone review request
+export const acceptMilestoneReviewRequest = async (reviewRequestId, projId, selectedAccount) => {
+  try {
+    // Get the RequestManager and Projects contract instances
+    console.log(1);
+    const requestManagerContract = await getRequestManagerContract();
+    console.log(2);
+    // Call the acceptMilestoneReviewRequest function
+    await requestManagerContract.methods
+      .acceptMilestoneReviewRequest(reviewRequestId, projId)
+      .send({ from: selectedAccount });
+    console.log('Milestone review request accepted:');
+  } catch (error) {
+    console.error('Error accepting milestone review request:', error);
+    throw error; // Re-throw the error for handling in the UI
+  }
+};
+
+// Function to reject a milestone review request
+export const rejectMilestoneReviewRequest = async (reviewRequestId, reason, selectedAccount) => {
+  try {
+    // Get the RequestManager contract instance
+    const requestManagerContract = await getRequestManagerContract();
+
+    // Call the rejectMilestoneReviewRequest function
+    return await requestManagerContract.methods
+      .rejectMilestoneReviewRequest(reviewRequestId, reason)
+      .send({ from: selectedAccount });
+  } catch (error) {
+    console.error('Error rejecting milestone review request:', error);
+    throw error; // Re-throw the error for handling in the UI
   }
 };

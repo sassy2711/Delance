@@ -66,18 +66,21 @@ export async function uploadFiletoIPFS(file, milestoneId, account) {
 
 
 /**
- * Downloads a file from IPFS and prompts the user to save it.
- * @param {string} cid - The IPFS content identifier for the file.
- * @param {string} filename - The desired name for the downloaded file.
+ * Downloads a file from IPFS and triggers a download in the browser.
+ * @param {string} cid - The IPFS content identifier.
+ * @param {string} filename - The name to save the downloaded file as.
  */
-export async function downloadFileFromIPFS(cid, filename = 'downloadedFile') {
+export const downloadFileFromIPFS = async (cid, filename = 'downloadedFile') => {
+  console.log("downloading file");
   const url = `https://gateway.pinata.cloud/ipfs/${cid}`;
-
+  console.log(1);
   try {
+    console.log(2);
+    // Make a request to the IPFS gateway to get the file data as a blob
     const response = await axios.get(url, { responseType: 'blob' });
     const blob = new Blob([response.data], { type: response.headers['content-type'] });
 
-    // Create a download link and click it to start the download
+    // Create a download link and click it to trigger download
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = filename;
@@ -90,6 +93,31 @@ export async function downloadFileFromIPFS(cid, filename = 'downloadedFile') {
 
     console.log(`File downloaded successfully as ${filename}`);
   } catch (error) {
-    console.error("Error downloading file:", error.message);
+    console.log(3);
+    console.error("Error downloading file from IPFS:", error.message);
   }
-}
+};
+
+/**
+ * Verifies if a file is on IPFS using the provided CID.
+ * @param {string} cid - The IPFS content identifier for the file.
+ * @returns {Promise<string>} - A promise that resolves with the verification message.
+ */
+export const verifyIPFSFile = async (cid) => {
+  try {
+    const response = await axios.post(
+      'https://api.quicknode.com/functions/rest/v1/functions/c7f2c204-4dd5-4aa4-9803-2b90b1cb8d12/call', 
+      { user_data: { cid } }, // Ensure the structure matches what your function expects
+      {
+        headers: {
+          'Authorization': 'Bearer QN_c8aa28a4799341c085c01650882a8753', // Ensure this is a valid API key and wrapped in backticks
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error verifying IPFS file:', error);
+    throw new Error('An error occurred while verifying the file.');
+  }
+};

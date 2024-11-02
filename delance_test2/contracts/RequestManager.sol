@@ -94,6 +94,7 @@ contract RequestManager {
     event MilestoneReviewRequestSent(uint requestId, uint milestoneId, string cid);
     event MilestoneAccepted(uint projectId, uint milestoneId, uint updatedRating);
     event RejectionReasonAccepted(uint _reviewRequestId);
+    event MilestoneReviewRequestRejected(uint indexed reviewRequestId, string reason);
 
     constructor(address _projectsContract) {
         projectsContract = Projects(_projectsContract);
@@ -339,108 +340,111 @@ contract RequestManager {
 
 
 function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
-    // Fetch the  request using the ID
-    MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
-    require(!reviewRequest.reviewed, "Review request already accepted");
+        // Fetch the  request using the ID
+        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
+        require(!reviewRequest.reviewed, "Review request already accepted");
 
-    // Get the milestone ID from the  request
-    uint milestoneId = reviewRequest.milestoneId;
+        // Get the milestone ID from the  request
+        uint milestoneId = reviewRequest.milestoneId;
 
-    // Retrieve the associated milestones for the project
-    (
-        uint[] memory ids,
-        uint[] memory projectIds,
-        string[] memory names,
-        string[] memory descriptions,
-        uint[] memory daycounts,
-        uint[] memory percentages,
-        bool[] memory completions,
-        string[] memory proofFileHashes
-    ) = projectsContract.getMilestones(_projId);
+        // Retrieve the associated milestones for the project
+        (
+            uint[] memory ids,
+            uint[] memory projectIds,
+            string[] memory names,
+            string[] memory descriptions,
+            uint[] memory daycounts,
+            uint[] memory percentages,
+            bool[] memory completions,
+            string[] memory proofFileHashes
+        ) = projectsContract.getMilestones(_projId);
 
-    // Initialize variables to store the milestone data once we find it
-    bool milestoneFound = false;
-    string memory milestoneName;
-    string memory milestoneDescription;
-    uint milestoneDaycount;
-    uint milestonePercentage;
-    bool milestoneCompleted;
-    string memory milestoneProofFileHash;
+        // Initialize variables to store the milestone data once we find it
+        bool milestoneFound = false;
+        string memory milestoneName;
+        string memory milestoneDescription;
+        uint milestoneDaycount;
+        uint milestonePercentage;
+        bool milestoneCompleted;
+        string memory milestoneProofFileHash;
 
-    // Search for the milestone with the specified milestoneId
-    for (uint i = 0; i < ids.length; i++) {
-        if (ids[i] == milestoneId) {
-            milestoneFound = true;
-            milestoneName = names[i];
-            milestoneDescription = descriptions[i];
-            milestoneDaycount = daycounts[i];
-            milestonePercentage = percentages[i];
-            milestoneCompleted = completions[i];
-            milestoneProofFileHash = proofFileHashes[i];
-            break;
+        // Search for the milestone with the specified milestoneId
+        for (uint i = 0; i < ids.length; i++) {
+            if (ids[i] == milestoneId) {
+                milestoneFound = true;
+                milestoneName = names[i];
+                milestoneDescription = descriptions[i];
+                milestoneDaycount = daycounts[i];
+                milestonePercentage = percentages[i];
+                milestoneCompleted = completions[i];
+                milestoneProofFileHash = proofFileHashes[i];
+                break;
+            }
         }
-    }
 
-    require(milestoneFound, "Milestone does not exist");
+        require(milestoneFound, "Milestone does not exist");
 
-    // Use getProject to retrieve the project details
-    (
-        uint projId,
-        string memory projName,
-        string memory projDescription,
-        uint projReward,
-        Projects.Status projStatus,
-        address projEmployer
-    ) = projectsContract.getProject(_projId);
+        // Use getProject to retrieve the project details
+        (
+            uint projId,
+            string memory projName,
+            string memory projDescription,
+            uint projReward,
+            Projects.Status projStatus,
+            address projEmployer
+        ) = projectsContract.getProject(_projId);
 
-    // Verify that the sender is the employer of the project
-    require(projEmployer == msg.sender, "Only the employer can accept milestones");
+        // Verify that the sender is the employer of the project
+        require(projEmployer == msg.sender, "Only the employer can accept milestones");
 
-    // Mark the review request as accepted
-    reviewRequest.reviewed = true;
+        // Mark the review request as accepted
+        reviewRequest.reviewed = true;
 
-    // Get freelancer's address from the request
-    address freelancer = reviewRequest.freelancer;
+        // Get freelancer's address from the request
+        address freelancer = reviewRequest.freelancer;
 
-    // Update freelancer rating based on the milestone percentage
-    uint currentRating = projectsContract.getFreelancerRating(freelancer);
-    uint rewardWeight = projReward / 100;
-    uint newRating = currentRating + (5 * milestonePercentage / rewardWeight);
+        // Update freelancer rating based on the milestone percentage
+        uint currentRating = projectsContract.getFreelancerRating(freelancer);
+        uint rewardWeight = projReward / 100;
+        uint newRating = currentRating + (5 * milestonePercentage / rewardWeight);
 
-    // Ensure the new rating does not exceed 500
-    if (newRating > 500) {
-        newRating = 500;
-    }
-
-    // Set the new rating for the freelancer
-    projectsContract.setFreelancerRating(freelancer, newRating);
-
-    // Find the request with the matching projectId and freelancer
-    uint requestIndex;
-    bool foundRequest = false;
-
-    for (uint i = 0; i < requestCount; i++) {
-        if (requests[i].projectId == _projId && requests[i].freelancer == freelancer) {
-            requestIndex = i;
-            foundRequest = true;
-            break;
+        // Ensure the new rating does not exceed 500
+        if (newRating > 500) {
+            newRating = 500;
         }
+
+        // Set the new rating for the freelancer
+        projectsContract.setFreelancerRating(freelancer, newRating);
+
+        // Find the request with the matching projectId and freelancer
+        uint requestIndex;
+        bool foundRequest = false;
+
+        for (uint i = 0; i < requestCount; i++) {
+            if (requests[i].projectId == _projId && requests[i].freelancer == freelancer && requests[i].status == RequestStatus.Accepted) {
+                requestIndex = i;
+                foundRequest = true;
+                break;
+            }
+        }
+        require(foundRequest, "Associated request not found");
+
+        // Release the milestone payment from escrow using the found request
+        requests[requestIndex].escrowContract.releaseMilestonePayment(milestonePercentage);
+
+        // Emit an event to record the milestone acceptance
+        emit MilestoneAccepted(projId, milestoneId, newRating);
     }
-    require(foundRequest, "Associated request not found");
-
-    // Release the milestone payment from escrow using the found request
-    requests[requestIndex].escrowContract.releaseMilestonePayment(milestonePercentage);
-
-    // Emit an event to record the milestone acceptance
-    emit MilestoneAccepted(projId, milestoneId, newRating);
-}
 
 
 
 
-    function rejectMilestoneReviewRequest(uint _reviewRequestId, string calldata _reason) view  public returns (string memory) {
+    function rejectMilestoneReviewRequest(uint _reviewRequestId, string calldata _reason)  public returns (string memory) {
         MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
         require(!reviewRequest.reviewed, "Review request already processed");
+        reviewRequest.reviewed = true;
+
+        emit MilestoneReviewRequestRejected(_reviewRequestId, _reason);
         return _reason;
     }
 
