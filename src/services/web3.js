@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json'
-const PROJECTS_CONTRACT_ADDRESS = '0x90df1317237267f717E1B251442702BA1B655b6A';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xB1AC5840645273819522df32f79c83A3A307443f'
+const PROJECTS_CONTRACT_ADDRESS = '0x5a524BD5cA5084C77820CbB32D2E20cB87BCA64A';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0x52edC03f6eb7Df9ac6986572CE638EFaA7683353'
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -320,5 +320,84 @@ export const fetchRequestsByProjectId = async (projectId) => {
   }
 };
 
+export const acceptRequest = async (requestId, employer, projectReward) => {
+  try {
+    const contract = await getRequestManagerContract();
+    const reward = projectReward;
 
+    await contract.methods.acceptRequest(requestId).send({
+      from: employer,
+      value: reward,
+    });
 
+    console.log('Request accepted successfully');
+  } catch (error) {
+    console.error('Error accepting request:', error);
+  }
+};
+
+export const rejectRequest = async (requestId, employer) => {
+  try {
+    const contract = await getRequestManagerContract();
+    console.log(1);
+    await contract.methods.rejectRequest(requestId).send({
+      from: employer,
+    });
+    console.log('Request rejected successfully');
+  } catch (error) {
+    console.error('Error rejecting request:', error);
+  }
+};
+
+export const fetchAcceptedProjectsByFreelancer = async (freelancer) => {
+  try {
+    console.log("Fetching accepted projects for freelancer:", freelancer);
+
+    // Get the instance of your smart contract (adjust as needed)
+    const contract = await getRequestManagerContract(); // Replace with the actual function to get the Projects contract instance
+
+    // Call the viewAcceptedProjectsByFreelancer function with the freelancer address
+    const result = await contract.methods.viewAcceptedProjectsByFreelancer(freelancer).call();
+
+    console.log("Response received:", result);
+
+    // Destructure the returned arrays to match the Solidity return values
+    const projectIds = result[0];
+    const names = result[1];
+    const descriptions = result[2];
+    const rewards = result[3];
+    const statuses = result[4];
+    const employers = result[5];
+
+    // Assuming you have a status enum in your frontend to convert indexes to human-readable strings
+    const statusEnum = ["Closed", "Open"]; // Adjust to match the actual Project.Status enum in Solidity
+
+    // Map the projects into an array of objects
+    const projects = projectIds.map((id, index) => ({
+      id: id.toString(),
+      name: names[index],
+      description: descriptions[index],
+      reward: rewards[index].toString(),
+      status: statusEnum[statuses[index]], // Convert enum index to string
+      employer: employers[index],
+    }));
+
+    return projects; // Return the array of project objects
+  } catch (error) {
+    console.error("Error fetching accepted projects for freelancer:", error);
+    throw error; // Re-throw the error for further handling if needed
+  }
+};
+
+export async function addFile(milestoneId, name, rid, cid, account) {
+  try {
+      // Get the contract instance
+      const contract = await getRequestManagerContract();
+      // Call the addFile function in the smart contract
+      await contract.methods.addFile(milestoneId, name, rid, cid).send({ from: account });
+      console.log('Transaction successful:');
+  } catch (error) {
+      console.error('Error calling addFile:', error);
+      throw error;
+  }
+};

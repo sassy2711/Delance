@@ -1,16 +1,13 @@
-// FreelancerProjectCard.js
+// delance/src/components/YourProjectCard.js
 import React, { useEffect, useState } from 'react';
-import { getFreelancerRating, sendRequest, getMilestones } from '../../../../services/web3'; // Adjust the path based on your project structure
+import { getFreelancerRating, getMilestones } from '../../../../services/web3'; // Adjust the path based on your project structure
 import MilestoneCard from '../MilestoneCard/MilestoneCard';
 
-const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept selectedAccount as a prop
+const YourProjectCard = ({ project, selectedAccount }) => {
   const { id, title, description, reward, status, employer } = project;
   const [freelancerRating, setFreelancerRating] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [milestones, setMilestones] = useState([]);
-  const [showMilestones, setShowMilestones] = useState(false); // New state for toggling milestones view
-
-  console.log(selectedAccount);
+  const [showMilestones, setShowMilestones] = useState(false);
 
   // Fetch the freelancer's rating when the component mounts
   useEffect(() => {
@@ -19,7 +16,6 @@ const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept sele
         try {
           const rating = await getFreelancerRating(selectedAccount);
           setFreelancerRating(rating.rating);
-          console.log(freelancerRating);
         } catch (error) {
           console.error('Error fetching freelancer rating:', error);
         }
@@ -28,23 +24,6 @@ const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept sele
 
     fetchFreelancerRating();
   }, [selectedAccount]);
-
-  // Handle the send request button click
-  const handleSendRequest = async () => {
-    setLoading(true);
-    try {
-      const response = await sendRequest(id, freelancerRating, selectedAccount);
-      if (response.success) {
-        console.log('Request sent successfully:', response.message);
-      } else {
-        console.error('Error sending request:', response.message);
-      }
-    } catch (error) {
-      console.error('Error while sending request:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Handle viewing milestones for the project
   const handleViewMilestones = async () => {
@@ -67,17 +46,13 @@ const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept sele
   };
 
   return (
-    <div className="freelancer-project-card">
+    <div className="your-project-card">
       <h3>{title}</h3>
       <p>Description: {description}</p>
       <p>Reward: {reward} ETH</p>
       <p>Status: {status}</p>
       <p>Employer: {employer}</p>
       <p>Freelancer Rating: {freelancerRating.toString()} / 5</p>
-
-      <button onClick={handleSendRequest} disabled={loading}>
-        {loading ? 'Sending...' : 'Send Request'}
-      </button>
 
       {/* Button to view milestones */}
       <button onClick={handleViewMilestones}>
@@ -90,7 +65,7 @@ const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept sele
           <h4>Milestones</h4>
           {milestones.length > 0 ? (
             milestones.map((milestone) => (
-              <MilestoneCard key={milestone.id} milestone={milestone} />
+              <MilestoneCard key={milestone.id} milestone={milestone} selectedAccount={selectedAccount} />
             ))
           ) : (
             <p>No milestones available.</p>
@@ -101,5 +76,5 @@ const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept sele
   );
 };
 
-export default FreelancerProjectCard;
+export default YourProjectCard;
 

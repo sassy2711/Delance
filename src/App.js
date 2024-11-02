@@ -5,6 +5,7 @@ import Client from './components/Client/Client';
 import Freelancer from './components/Freelancer/Freelancer';
 import ClientProjectsPage from './components/Client/ProjectsPage/ProjectsPage';
 import FreelancerProjectsPage from './components/Freelancer/ProjectsPage/ProjectsPage';
+import YourProjects from './components/Freelancer/YourProjects/YourProjects';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/freelancer" element={<Freelancer />} />
       <Route path="/client/projects" element={<ClientProjectsPage />} />
       <Route path="/freelancer/projects" element={<FreelancerProjectsPage />} />
+      <Route path="/freelancer/your-projects" element={<YourProjects />} />
     </Routes>
   );
 }

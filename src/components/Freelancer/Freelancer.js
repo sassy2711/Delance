@@ -1,7 +1,6 @@
-// // delance/src/components/Freelancer.js
-
+// delance/src/components/Freelancer.js
 import React, { useEffect, useState } from 'react';
-import { connectWallet } from '../../services/web3'; // Import your connectWallet function
+import { connectWallet } from '../../services/web3'; // Import connectWallet function
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 function Freelancer() {
@@ -18,16 +17,21 @@ function Freelancer() {
   }, []);
 
   const fetchBalance = async (account) => {
-    const { web3 } = await connectWallet(); // Use your web3 function
+    const { web3 } = await connectWallet();
     if (web3) {
-      const balance = await web3.eth.getBalance(account); // Fetch account balance
-      setBalance(web3.utils.fromWei(balance, 'ether')); // Convert from Wei to Ether
+      const balance = await web3.eth.getBalance(account);
+      setBalance(web3.utils.fromWei(balance, 'ether'));
     }
   };
 
   // Function to navigate to the FreelancerProjectsPage
   const handleViewProjects = () => {
-    navigate('/freelancer/projects', { state: { selectedAccount } }); // Pass selectedAccount in state
+    navigate('/freelancer/projects', { state: { selectedAccount } });
+  };
+
+  // Function to navigate to the YourProjects page
+  const handleYourProjects = () => {
+    navigate('/freelancer/your-projects', { state: { selectedAccount } });
   };
 
   return (
@@ -35,8 +39,8 @@ function Freelancer() {
       <h2>Freelancer Dashboard</h2>
       {selectedAccount && <p>Connected Account: {selectedAccount}</p>}
       {balance && <p>Account Balance: {balance} ETH</p>}
-      <button onClick={handleViewProjects}>View Projects</button> {/* Button to view projects */}
-      {/* Add more freelancer-specific content here */}
+      <button onClick={handleViewProjects}>View Projects</button>
+      <button onClick={handleYourProjects}>Your Projects</button> {/* New button */}
     </div>
   );
 }
