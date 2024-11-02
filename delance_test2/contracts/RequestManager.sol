@@ -77,6 +77,17 @@ contract RequestManager {
         string cid;
     }
 
+    struct ReviewResponse{
+        uint id;
+        uint milestoneId;
+        address freelancer;
+        string response;
+        bool accepted;
+    }
+    
+    mapping(uint => ReviewResponse) public reviewResponses;
+    uint public responseCount;
+
     // Mapping milestone ID to an array of files
     mapping(uint => File[]) public milestoneFiles;
     uint public fileCount;
@@ -93,8 +104,8 @@ contract RequestManager {
     event RequestRejected(uint requestId, address freelancer);
     event MilestoneReviewRequestSent(uint requestId, uint milestoneId, string cid);
     event MilestoneAccepted(uint projectId, uint milestoneId, uint updatedRating);
-    event RejectionReasonAccepted(uint _reviewRequestId);
     event MilestoneReviewRequestRejected(uint indexed reviewRequestId, string reason);
+    event RejectionReasonAccepted(uint _reviewRequestId);
 
     constructor(address _projectsContract) {
         projectsContract = Projects(_projectsContract);
@@ -182,6 +193,36 @@ contract RequestManager {
         }
 
         return (requestIds, projectIds, freelancers, freelancerRatings, statuses, escrowContracts);
+    }
+
+
+    function viewAllReviewResponses() public view returns (
+        uint[] memory responseIds,
+        uint[] memory milestoneIds,
+        address[] memory freelancers,
+        string[] memory responses,
+        bool[] memory acceptedStatuses
+    ) {
+        uint count = responseCount;
+
+        // Initialize arrays based on the total response count
+        responseIds = new uint[](count);
+        milestoneIds = new uint[](count);
+        freelancers = new address[](count);
+        responses = new string[](count);
+        acceptedStatuses = new bool[](count);
+
+        // Populate the arrays with response details
+        for (uint i = 1; i <= count; i++) {
+            ReviewResponse storage reviewResponse = reviewResponses[i];
+            responseIds[i - 1] = reviewResponse.id;
+            milestoneIds[i - 1] = reviewResponse.milestoneId;
+            freelancers[i - 1] = reviewResponse.freelancer;
+            responses[i - 1] = reviewResponse.response;
+            acceptedStatuses[i - 1] = reviewResponse.accepted;
+        }
+
+        return (responseIds, milestoneIds, freelancers, responses, acceptedStatuses);
     }
 
 
@@ -337,9 +378,7 @@ contract RequestManager {
         return (requestIds, milestoneIds, freelancers, cids, reviewedStatuses);
     }
 
-
-
-function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
+    function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
         // Fetch the  request using the ID
         MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
         require(!reviewRequest.reviewed, "Review request already accepted");
@@ -436,16 +475,114 @@ function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) publi
         emit MilestoneAccepted(projId, milestoneId, newRating);
     }
 
+    // function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
+    //     // Fetch the request using the ID
+    //     MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
+    //     require(reviewRequest.id != 0, "Review request does not exist");
+    //     require(!reviewRequest.reviewed, "Review request already accepted");
+
+    //     // Get the milestone ID from the request
+    //     uint milestoneId = reviewRequest.milestoneId;
+
+    //     // Retrieve the associated milestones for the project
+    //     (
+    //         uint[] memory ids,
+    //         ,  // projectIds not used
+    //         ,  // names not used
+    //         ,  // descriptions not used
+    //         uint[] memory daycounts,
+    //         uint[] memory percentages,
+    //         bool[] memory completions,
+    //         string[] memory proofFileHashes
+    //     ) = projectsContract.getMilestones(_projId);
+
+    //     // Verify that the milestone exists and get its index
+    //     uint milestoneIndex;
+    //     bool milestoneFound = false;
+    //     for (uint i = 0; i < ids.length; i++) {
+    //         if (ids[i] == milestoneId) {
+    //             milestoneIndex = i;
+    //             milestoneFound = true;
+    //             break;
+    //         }
+    //     }
+    //     require(milestoneFound, "Milestone does not exist");
+    //     require(!completions[milestoneIndex], "Milestone already completed");
+    //     require(bytes(proofFileHashes[milestoneIndex]).length > 0, "Proof file not uploaded");
+
+    //     // Get project details
+    //     (, , , uint projReward, , address projEmployer) = projectsContract.getProject(_projId);
+    //     require(msg.sender == projEmployer, "Only the employer can accept milestones");
+
+    //     // Mark the milestone as completed in the Projects contract
+    //     projectsContract.completeMilestone(_projId, milestoneId);
+
+    //     // Mark the review request as accepted
+    //     reviewRequest.reviewed = true;
+
+    //     // Get freelancer's address from the request
+    //     address freelancer = reviewRequest.freelancer;
+
+    //     // Update freelancer rating
+    //     uint currentRating = projectsContract.getFreelancerRating(freelancer);
+    //     uint milestonePercentage = percentages[milestoneIndex];
+        
+    //     // Calculate rating increase based on milestone percentage and project reward
+    //     uint ratingIncrease = (5 * milestonePercentage * daycounts[milestoneIndex]) / 100;
+    //     uint newRating = currentRating + ratingIncrease;
+        
+    //     // Cap the rating at 500 (5.0)
+    //     if (newRating > 500) {
+    //         newRating = 500;
+    //     }
+
+    //     // Update the freelancer's rating
+    //     projectsContract.setFreelancerRating(freelancer, newRating);
+
+    //     // Find the associated request for the escrow
+    //     uint requestId;
+    //     bool foundRequest = false;
+    //     for (uint i = 1; i <= requestCount; i++) {
+    //         if (requests[i].projectId == _projId && 
+    //             requests[i].freelancer == freelancer && 
+    //             requests[i].status == RequestStatus.Accepted) {
+    //             requestId = i;
+    //             foundRequest = true;
+    //             break;
+    //         }
+    //     }
+    //     require(foundRequest, "Associated request not found");
+    //     require(address(requests[requestId].escrowContract) != address(0), "Escrow contract not found");
+
+    //     // Release the milestone payment from escrow
+    //     requests[requestId].escrowContract.releaseMilestonePayment(milestonePercentage);
+
+    //     // Emit event
+    //     emit MilestoneAccepted(_projId, milestoneId, newRating);
+    // }
 
 
 
-    function rejectMilestoneReviewRequest(uint _reviewRequestId, string calldata _reason)  public returns (string memory) {
+
+    function rejectMilestoneReviewRequest(uint _reviewRequestId, string calldata _reason)  public {
         MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
         require(!reviewRequest.reviewed, "Review request already processed");
         reviewRequest.reviewed = true;
 
+        uint _milestoneId = reviewRequest.milestoneId;
+        address _freelancer = reviewRequest.freelancer;
+
+        responseCount++;
+        // request.escrowContract = new ReviewResponse{value: projectReward}(request.freelancer, employer);
+        reviewResponses[responseCount] = ReviewResponse({
+            id: responseCount,
+            milestoneId: _milestoneId,
+            freelancer: _freelancer,
+            response: _reason,
+            accepted: false
+        });
+
         emit MilestoneReviewRequestRejected(_reviewRequestId, _reason);
-        return _reason;
     }
 
     function acceptRejectionReason(uint _reviewRequestId) public {

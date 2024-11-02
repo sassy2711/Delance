@@ -1,21 +1,3 @@
-// // RequestCard.js
-// import React from 'react';
-
-// function RequestCard({ request }) {
-//   return (
-//     <div className="request-card">
-//       <p>Request ID: {request.requestId}</p>
-//       <p>Project ID: {request.projectId}</p>
-//       <p>Freelancer: {request.freelancer}</p>
-//       <p>Freelancer Rating: {request.freelancerRating}</p>
-//       <p>Status: {request.status}</p>
-//       <p>Escrow Contract: {request.escrowContract}</p>
-//     </div>
-//   );
-// }
-
-// export default RequestCard;
-
 import React from 'react';
 import { acceptRequest, rejectRequest } from '../../../../services/web3';
 

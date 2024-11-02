@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
-import RequestManagerContract from '../contracts/RequestManager.json'
+import RequestManagerContract from '../contracts/RequestManager.json';
 import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
-const PROJECTS_CONTRACT_ADDRESS = '0x57A5478e19B1949BBC8c933e390DEf389CCf8FEC';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xcbc7bfD7170785c963Aef781c4DfF7377eD0F708'
+const PROJECTS_CONTRACT_ADDRESS = '0xBF227d6d184487aDE805179e68fa9951a13E59d2';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xe6b47c372E14C65eB5e34f7A6BB20026309b90e9';
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -508,11 +508,66 @@ export const rejectMilestoneReviewRequest = async (reviewRequestId, reason, sele
     const requestManagerContract = await getRequestManagerContract();
 
     // Call the rejectMilestoneReviewRequest function
-    return await requestManagerContract.methods
+    await requestManagerContract.methods
       .rejectMilestoneReviewRequest(reviewRequestId, reason)
       .send({ from: selectedAccount });
   } catch (error) {
     console.error('Error rejecting milestone review request:', error);
     throw error; // Re-throw the error for handling in the UI
+  }
+};
+
+export const fetchReviewResponsesByMilestoneId = async (milestoneId) => {
+  console.log("Fetching review responses for Milestone ID:", milestoneId);
+
+  try {
+    console.log("Step 1: Getting contract instance...");
+    const contract = await getRequestManagerContract(); // Get the instance of the RequestManager contract
+    console.log("Step 2: Calling viewAllReviewResponses...");
+
+    // Call the contract function
+    const result = await contract.methods.viewAllReviewResponses().call();
+    console.log("Step 3: Response received:", result);
+
+    // Destructure each array from the result
+    const responseIds = result[0];
+    const milestoneIds = result[1];
+    const freelancers = result[2];
+    const responses = result[3];
+    const acceptedStatuses = result[4];
+
+    // Map each response into an object and filter by milestoneId
+    const filteredResponses = responseIds.map((id, index) => ({
+      responseId: id.toString(),
+      milestoneId: milestoneIds[index].toString(),
+      freelancer: freelancers[index],
+      response: responses[index],
+      accepted: acceptedStatuses[index],
+    })).filter(response => response.milestoneId === milestoneId.toString()); // Filter by milestoneId
+
+    return filteredResponses; // Return the filtered array of responses
+  } catch (error) {
+    console.error("Error fetching review responses by milestone ID:", error);
+    throw error; // Re-throw the error for further handling if needed
+  }
+};
+
+export const acceptRejectionReason = async (reviewRequestId, selectedAccount) => {
+  console.log("Accepting rejection reason for Review Request ID:", reviewRequestId);
+
+  try {
+    console.log("Step 1: Getting contract instance...");
+    const contract = await getRequestManagerContract(); // Get the instance of the RequestManager contract
+    console.log("Step 2: Sending transaction...");
+
+    // Send the transaction to the blockchain
+    const receipt = await contract.methods.acceptRejectionReason(reviewRequestId)
+      .send({ from: selectedAccount });
+
+    console.log("Transaction successful! Receipt:", receipt);
+    return receipt; // Return the transaction receipt for further handling if needed
+  } catch (error) {
+    console.error("Error accepting rejection reason:", error);
+    throw error; // Re-throw the error for further handling if needed
   }
 };
