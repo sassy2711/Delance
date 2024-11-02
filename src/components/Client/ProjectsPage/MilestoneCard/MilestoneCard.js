@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { downloadFilesForMilestone, fetchMilestoneReviewRequestsByMilestoneId } from '../../../../services/web3'; // Adjust the path based on your project structure
 import ReviewRequestCard from './ReviewRequestCard/ReviewRequestCard'; // Adjust the path based on your project structure
+import './MilestoneCard.css'
 
 function MilestoneCard({ milestone, selectedAddress, projectId }) {
   console.log(selectedAddress);
@@ -38,7 +39,6 @@ function MilestoneCard({ milestone, selectedAddress, projectId }) {
       <p>Days to Complete: {milestone.daycount}</p>
       <p>Percentage: {milestone.percentage}%</p>
       <p>Completed: {milestone.completed ? "Yes" : "No"}</p>
-      <p>Proof File Hash: {milestone.proofFileHash}</p>
       
       {/* Download Files Button */}
       <button onClick={handleDownloadFiles}>Download Files</button>

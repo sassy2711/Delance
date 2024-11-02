@@ -378,6 +378,31 @@ contract RequestManager {
         return (requestIds, milestoneIds, freelancers, cids, reviewedStatuses);
     }
 
+
+    function getEscrowAccountFromReviewRequest(uint _reviewRequestId, uint _projectId) public view returns (Escrow) {
+        // Fetch the MilestoneReviewRequest using the provided ID
+        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
+
+        // Ensure the review request exists
+        require(reviewRequest.id != 0, "Review request does not exist");
+        
+        // Find the corresponding request based on the project ID and freelancer address
+        for (uint i = 0; i < requestCount; i++) {
+            Request storage request = requests[i];
+
+            // Check if the request matches the provided projectId and the freelancer address from the review request
+            if (request.projectId == _projectId && request.freelancer == reviewRequest.freelancer && request.status == RequestStatus.Accepted) {
+                return request.escrowContract; // Return the escrow contract associated with the request
+            }
+        }
+
+        // If no matching request was found, revert with an error message
+        revert("No matching request found for this review request");
+    }
+
+
+
+
     function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
         // Fetch the  request using the ID
         MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
@@ -423,20 +448,6 @@ contract RequestManager {
 
         require(milestoneFound, "Milestone does not exist");
 
-        // Use getProject to retrieve the project details
-        (
-            uint projId,
-            string memory projName,
-            string memory projDescription,
-            uint projReward,
-            Projects.Status projStatus,
-            address projEmployer
-        ) = projectsContract.getProject(_projId);
-
-        // Verify that the sender is the employer of the project
-        require(projEmployer == msg.sender, "Only the employer can accept milestones");
-
-        // Mark the review request as accepted
         reviewRequest.reviewed = true;
 
         // Get freelancer's address from the request
@@ -444,8 +455,8 @@ contract RequestManager {
 
         // Update freelancer rating based on the milestone percentage
         uint currentRating = projectsContract.getFreelancerRating(freelancer);
-        uint rewardWeight = projReward / 100;
-        uint newRating = currentRating + (5 * milestonePercentage / rewardWeight);
+        // uint rewardWeight = projReward / 100;
+        uint newRating = currentRating + (5 * milestonePercentage / 100);
 
         // Ensure the new rating does not exceed 500
         if (newRating > 500) {
@@ -455,25 +466,121 @@ contract RequestManager {
         // Set the new rating for the freelancer
         projectsContract.setFreelancerRating(freelancer, newRating);
 
-        // Find the request with the matching projectId and freelancer
-        uint requestIndex;
-        bool foundRequest = false;
 
-        for (uint i = 0; i < requestCount; i++) {
-            if (requests[i].projectId == _projId && requests[i].freelancer == freelancer && requests[i].status == RequestStatus.Accepted) {
-                requestIndex = i;
-                foundRequest = true;
-                break;
-            }
-        }
-        require(foundRequest, "Associated request not found");
+        getEscrowAccountFromReviewRequest(_reviewRequestId, _projId).releaseMilestonePayment(milestonePercentage);
 
-        // Release the milestone payment from escrow using the found request
-        requests[requestIndex].escrowContract.releaseMilestonePayment(milestonePercentage);
 
-        // Emit an event to record the milestone acceptance
-        emit MilestoneAccepted(projId, milestoneId, newRating);
+        uint _milestoneId = reviewRequest.milestoneId;
+        address _freelancer = reviewRequest.freelancer;
+
+        responseCount++;
+        reviewResponses[responseCount] = ReviewResponse({
+            id: responseCount,
+            milestoneId: _milestoneId,
+            freelancer: _freelancer,
+            response: "",
+            accepted: true
+        });
     }
+
+
+
+    // function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
+    //     // Fetch the  request using the ID
+    //     MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];
+    //     require(!reviewRequest.reviewed, "Review request already accepted");
+
+    //     // Get the milestone ID from the  request
+    //     uint milestoneId = reviewRequest.milestoneId;
+
+    //     // Retrieve the associated milestones for the project
+    //     (
+    //         uint[] memory ids,
+    //         uint[] memory projectIds,
+    //         string[] memory names,
+    //         string[] memory descriptions,
+    //         uint[] memory daycounts,
+    //         uint[] memory percentages,
+    //         bool[] memory completions,
+    //         string[] memory proofFileHashes
+    //     ) = projectsContract.getMilestones(_projId);
+
+    //     // Initialize variables to store the milestone data once we find it
+    //     bool milestoneFound = false;
+    //     string memory milestoneName;
+    //     string memory milestoneDescription;
+    //     uint milestoneDaycount;
+    //     uint milestonePercentage;
+    //     bool milestoneCompleted;
+    //     string memory milestoneProofFileHash;
+
+    //     // Search for the milestone with the specified milestoneId
+    //     for (uint i = 0; i < ids.length; i++) {
+    //         if (ids[i] == milestoneId) {
+    //             milestoneFound = true;
+    //             milestoneName = names[i];
+    //             milestoneDescription = descriptions[i];
+    //             milestoneDaycount = daycounts[i];
+    //             milestonePercentage = percentages[i];
+    //             milestoneCompleted = completions[i];
+    //             milestoneProofFileHash = proofFileHashes[i];
+    //             break;
+    //         }
+    //     }
+
+    //     require(milestoneFound, "Milestone does not exist");
+
+    //     // Use getProject to retrieve the project details
+    //     (
+    //         uint projId,
+    //         string memory projName,
+    //         string memory projDescription,
+    //         uint projReward,
+    //         Projects.Status projStatus,
+    //         address projEmployer
+    //     ) = projectsContract.getProject(_projId);
+
+    //     // Verify that the sender is the employer of the project
+    //     require(projEmployer == msg.sender, "Only the employer can accept milestones");
+
+    //     // Mark the review request as accepted
+    //     reviewRequest.reviewed = true;
+
+    //     // Get freelancer's address from the request
+    //     address freelancer = reviewRequest.freelancer;
+
+    //     // Update freelancer rating based on the milestone percentage
+    //     uint currentRating = projectsContract.getFreelancerRating(freelancer);
+    //     uint rewardWeight = projReward / 100;
+    //     uint newRating = currentRating + (5 * milestonePercentage / rewardWeight);
+
+    //     // Ensure the new rating does not exceed 500
+    //     if (newRating > 500) {
+    //         newRating = 500;
+    //     }
+
+    //     // Set the new rating for the freelancer
+    //     projectsContract.setFreelancerRating(freelancer, newRating);
+
+    //     // Find the request with the matching projectId and freelancer
+    //     uint requestIndex;
+    //     bool foundRequest = false;
+
+    //     for (uint i = 0; i < requestCount; i++) {
+    //         if (requests[i].projectId == _projId && requests[i].freelancer == freelancer && requests[i].status == RequestStatus.Accepted) {
+    //             requestIndex = i;
+    //             foundRequest = true;
+    //             break;
+    //         }
+    //     }
+    //     require(foundRequest, "Associated request not found");
+
+    //     // Release the milestone payment from escrow using the found request
+    //     requests[requestIndex].escrowContract.releaseMilestonePayment(milestonePercentage);
+
+    //     // Emit an event to record the milestone acceptance
+    //     emit MilestoneAccepted(projId, milestoneId, newRating);
+    // }
 
     // function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {
     //     // Fetch the request using the ID

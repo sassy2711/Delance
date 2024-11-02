@@ -128,7 +128,7 @@ export const fetchUserProjects = async (selectedAccount) => {
 
     // Call viewProjects function to get all projects
     const projectData = await contract.methods.viewProjects().call();
-
+    const statusEnum = ["Closed", "Open"];
     // Deconstruct arrays from projectData
     const ids = projectData[0];
     const names = projectData[1];
@@ -136,14 +136,13 @@ export const fetchUserProjects = async (selectedAccount) => {
     const rewards = projectData[3];
     const statuses = projectData[4];
     const employers = projectData[5];
-
     // Map the arrays to create an array of project objects and filter by employer
     const projects = ids.map((id, index) => ({
       id: id.toString(), // Convert BigInt to string if needed
       title: names[index],
       description: descriptions[index],
-      reward: rewards[index].toString(), // Convert BigInt to string if needed
-      status: statuses[index].toString(), // Assuming status is an enum, adjust as needed
+      reward: (rewards[index]/(10n**18n)).toString(), // Convert BigInt to string if needed
+      status: statusEnum[statuses[index]], // Assuming status is an enum, adjust as needed
       employer: employers[index],
     })).filter(project => project.employer && project.employer.toLowerCase() === selectedAccount.toLowerCase());
 
@@ -246,7 +245,7 @@ export const getFreelancerRating = async (freelancerAddress) => {
     const rating = await contract.methods.getFreelancerRating(freelancerAddress).call();
 
     console.log(`Freelancer rating: ${rating}`);
-    return { success: true, rating: rating };
+    return { success: true, rating: rating.toString() };
   } catch (error) {
     console.error("Error getting freelancer rating:", error);
     return { success: false, message: 'Failed to get freelancer rating.' };
