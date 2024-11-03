@@ -65,6 +65,9 @@ import { acceptMilestoneReviewRequest, rejectMilestoneReviewRequest } from '../.
 import './ReviewRequestCard.css';
 
 function ReviewRequestCard({ request, selectedAccount, projectId }) {
+    console.log(request.requestId);
+    console.log(projectId);
+    console.log(selectedAccount);
   const [declineReason, setDeclineReason] = useState('');
   const [isDeclining, setIsDeclining] = useState(false);
 

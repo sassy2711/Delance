@@ -2,8 +2,8 @@ import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json';
 import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
-const PROJECTS_CONTRACT_ADDRESS = '0x96c4ac2a893C0C03A8DaEDA822092085eDFdBdef';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xC15662C363dA00A78da0cB48e4fe00078474eF6b';
+const PROJECTS_CONTRACT_ADDRESS = '0xC0E05343e3CE6B07aBdD0E0ce8fDbad896dE29B0';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xE90F82B0F2753ee8668EbA568073D37FBa984e44';
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -537,7 +537,7 @@ export const fetchReviewResponsesByMilestoneId = async (milestoneId) => {
 
     // Map each response into an object and filter by milestoneId
     const filteredResponses = responseIds.map((id, index) => ({
-      responseId: id.toString(),
+      responseId: id,
       milestoneId: milestoneIds[index].toString(),
       freelancer: freelancers[index],
       response: responses[index],
