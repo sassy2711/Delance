@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { uploadFiletoIPFS } from '../../../../services/ipfs'; // Adjust the path based on your project structure
 import { fetchReviewResponsesByMilestoneId } from '../../../../services/web3';
 import ReviewResponseCard from './ReviewResponseCard/ReviewResponseCard';
+import './MilestoneCard.css';
 
 function MilestoneCard({ milestone, selectedAccount }) {
     const [selectedFile, setSelectedFile] = useState(null);

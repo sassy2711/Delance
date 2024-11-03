@@ -1,5 +1,6 @@
 // MilestoneCard.js
 import React from 'react';
+import './MilestoneCard.css'
 
 function MilestoneCard({ milestone }) {
   return (
@@ -10,7 +11,6 @@ function MilestoneCard({ milestone }) {
       <p>Days to Complete: {milestone.daycount}</p>
       <p>Percentage: {milestone.percentage}%</p>
       <p>Completed: {milestone.completed ? "Yes" : "No"}</p>
-      <p>Proof File Hash: {milestone.proofFileHash}</p>
     </div>
   );
 }

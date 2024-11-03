@@ -2,12 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { getFreelancerRating, getMilestones } from '../../../../services/web3'; // Adjust the path based on your project structure
 import MilestoneCard from '../MilestoneCard/MilestoneCard';
+import './ProjectCard.css'
 
 const YourProjectCard = ({ project, selectedAccount }) => {
   const { id, title, description, reward, status, employer } = project;
   const [freelancerRating, setFreelancerRating] = useState(0);
   const [milestones, setMilestones] = useState([]);
   const [showMilestones, setShowMilestones] = useState(false);
+  console.log(id);
+  console.log(title);
 
   // Fetch the freelancer's rating when the component mounts
   useEffect(() => {

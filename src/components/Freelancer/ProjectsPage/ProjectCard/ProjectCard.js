@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getFreelancerRating, sendRequest, getMilestones } from '../../../../services/web3'; // Adjust the path based on your project structure
 import MilestoneCard from '../MilestoneCard/MilestoneCard';
+import './ProjectCard.css'
 
 const FreelancerProjectCard = ({ project, selectedAccount }) => { // Accept selectedAccount as a prop
   const { id, title, description, reward, status, employer } = project;

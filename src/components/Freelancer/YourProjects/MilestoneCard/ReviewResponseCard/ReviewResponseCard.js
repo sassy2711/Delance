@@ -1,4 +1,5 @@
 import React from 'react';
+import './ReviewResponseCard.css';
 
 function ReviewResponseCard({ response }) {
     return (

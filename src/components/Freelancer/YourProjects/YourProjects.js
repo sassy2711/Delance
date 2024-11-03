@@ -1,49 +1,9 @@
-// // delance/src/components/YourProjects.js
-// import React, { useEffect, useState } from 'react';
-// import { fetchAcceptedProjectsByFreelancer } from '../../../services/web3';
-// import YourProjectCard from './ProjectsCard/ProjectCard'; // Import ProjectCard component
-
-// function YourProjects() {
-//   const [projects, setProjects] = useState([]);
-//   const freelancer = localStorage.getItem('selectedAccount');
-
-//   useEffect(() => {
-//     if (freelancer) {
-//       loadProjects();
-//     }
-//   }, [freelancer]);
-
-//   const loadProjects = async () => {
-//     try {
-//       const result = await fetchAcceptedProjectsByFreelancer(freelancer);
-//       setProjects(result);
-//     } catch (error) {
-//       console.error("Error loading projects:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h2>Your Accepted Projects</h2>
-//       {projects.length > 0 ? (
-//         projects.map((project) => (
-//           <YourProjectCard key={project.id} project={project} /> // Use ProjectCard to display each project
-//         ))
-//       ) : (
-//         <p>No accepted projects to display.</p>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default YourProjects;
-
-
 // delance/src/components/YourProjects.js
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom'; // Import useLocation hook
 import { fetchAcceptedProjectsByFreelancer } from '../../../services/web3';
-import YourProjectCard from './ProjectsCard/ProjectCard'; // Import ProjectCard component
+import YourProjectCard from './ProjectsCard/ProjectCard'; // Import YourProjectCard component
+import './YourProjects.css'; // Import the CSS file
 
 function YourProjects() {
   const [projects, setProjects] = useState([]);
@@ -66,18 +26,21 @@ function YourProjects() {
   };
 
   return (
-    <div>
-      <h2>Your Accepted Projects</h2>
-      {projects.length > 0 ? (
-        projects.map((project) => (
-          <YourProjectCard key={project.id} project={project} selectedAccount={freelancer} /> // Pass selectedAccount to ProjectCard
-        ))
-      ) : (
-        <p>No accepted projects to display.</p>
-      )}
+    <div className="your-projects-container">
+      <h2 className="your-projects-title">Your Accepted Projects</h2>
+      <div className="projects-grid">
+        {projects.length > 0 ? (
+          projects.map((project) => (
+            <div className="project-card" key={project.id}>
+              <YourProjectCard project={project} selectedAccount={freelancer} /> {/* Pass selectedAccount to YourProjectCard */}
+            </div>
+          ))
+        ) : (
+          <p>No accepted projects to display.</p>
+        )}
+      </div>
     </div>
   );
 }
 
 export default YourProjects;
-
