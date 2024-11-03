@@ -2,8 +2,8 @@ import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json';
 import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
-const PROJECTS_CONTRACT_ADDRESS = '0xBF227d6d184487aDE805179e68fa9951a13E59d2';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xe6b47c372E14C65eB5e34f7A6BB20026309b90e9';
+const PROJECTS_CONTRACT_ADDRESS = '0x96c4ac2a893C0C03A8DaEDA822092085eDFdBdef';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xC15662C363dA00A78da0cB48e4fe00078474eF6b';
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -101,7 +101,7 @@ export const fetchAllProjects = async () => {
       id: id.toString(), // Convert BigInt to string if needed
       title: names[index],
       description: descriptions[index],
-      reward: rewards[index].toString(), // Convert BigInt to string if needed
+      reward: rewards[index], // Convert BigInt to string if needed
       status: statuses[index].toString(), // Assuming status is an enum, adjust as needed
       employer: employers[index],
     }));
@@ -141,7 +141,7 @@ export const fetchUserProjects = async (selectedAccount) => {
       id: id.toString(), // Convert BigInt to string if needed
       title: names[index],
       description: descriptions[index],
-      reward: (rewards[index]/(10n**18n)).toString(), // Convert BigInt to string if needed
+      reward: rewards[index], // Convert BigInt to string if needed
       status: statusEnum[statuses[index]], // Assuming status is an enum, adjust as needed
       employer: employers[index],
     })).filter(project => project.employer && project.employer.toLowerCase() === selectedAccount.toLowerCase());
@@ -305,7 +305,7 @@ export const fetchRequestsByProjectId = async (projectId) => {
     // Map the requests into an array of objects and filter by projectId
     const statusEnum = ["Pending", "Approved", "Rejected"];
     const filteredRequests = requestIds.map((id, index) => ({
-      requestId: id.toString(),
+      requestId: id,
       projectId: projectIds[index].toString(),
       freelancer: freelancers[index],
       freelancerRating: freelancerRatings[index].toString(),
@@ -322,14 +322,14 @@ export const fetchRequestsByProjectId = async (projectId) => {
 
 export const acceptRequest = async (requestId, employer, projectReward) => {
   try {
+    console.log(1);
     const contract = await getRequestManagerContract();
     const reward = projectReward;
-
+    console.log(2);
     await contract.methods.acceptRequest(requestId).send({
       from: employer,
       value: reward,
     });
-
     console.log('Request accepted successfully');
   } catch (error) {
     console.error('Error accepting request:', error);

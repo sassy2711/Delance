@@ -96,6 +96,9 @@ import './RequestCard.css';
 function RequestCard({ request, employer, projectReward }) {
   const handleAccept = async () => {
     try {
+      console.log(request.requestId);
+      console.log(employer);
+      console.log(projectReward);
       await acceptRequest(request.requestId, employer, projectReward);
       alert('Request accepted successfully');
     } catch (error) {
