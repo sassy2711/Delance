@@ -5,12 +5,12 @@ import MilestoneCard from '../MilestoneCard/MilestoneCard';
 import './ProjectCard.css'
 
 const YourProjectCard = ({ project, selectedAccount }) => {
-  const { id, title, description, reward, status, employer } = project;
+  const { id, name, description, reward, status, employer } = project;
   const [freelancerRating, setFreelancerRating] = useState(0);
   const [milestones, setMilestones] = useState([]);
   const [showMilestones, setShowMilestones] = useState(false);
   console.log(id);
-  console.log(title);
+  console.log(name);
 
   // Fetch the freelancer's rating when the component mounts
   useEffect(() => {
@@ -50,7 +50,7 @@ const YourProjectCard = ({ project, selectedAccount }) => {
 
   return (
     <div className="your-project-card">
-      <h3>{title}</h3>
+      <h3>{name}</h3>
       <p>Description: {description}</p>
       <p>Reward: {reward} ETH</p>
       <p>Status: {status}</p>

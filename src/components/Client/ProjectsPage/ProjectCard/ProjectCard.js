@@ -6,6 +6,8 @@ import RequestCard from '../RequestCard/RequestCard';
 import './ProjectCard.css';
 
 function ProjectCard({ title, description, reward, status, employer, projectId }) {
+  console.log("ProjectCard");
+  console.log(typeof(projectId));
   const [milestoneName, setMilestoneName] = useState('');
   const [milestoneDescription, setMilestoneDescription] = useState('');
   const [milestoneDayCount, setMilestoneDayCount] = useState('');

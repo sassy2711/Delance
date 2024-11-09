@@ -1,417 +1,71 @@
 {
-  "contractName": "RequestManager",
+  "contractName": "Escrow",
   "abi": [
     {
       "inputs": [
         {
           "internalType": "address",
-          "name": "_projectsContract",
+          "name": "_freelancer",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_employer",
           "type": "address"
         }
       ],
-      "stateMutability": "nonpayable",
+      "stateMutability": "payable",
       "type": "constructor"
     },
     {
-      "anonymous": false,
-      "inputs": [
+      "inputs": [],
+      "name": "amount",
+      "outputs": [
         {
-          "indexed": false,
           "internalType": "uint256",
-          "name": "projectId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "milestoneId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "updatedRating",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "MilestoneAccepted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "reviewRequestId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "reason",
-          "type": "string"
-        }
-      ],
-      "name": "MilestoneReviewRequestRejected",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "milestoneId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "cid",
-          "type": "string"
-        }
-      ],
-      "name": "MilestoneReviewRequestSent",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "_reviewRequestId",
-          "type": "uint256"
-        }
-      ],
-      "name": "RejectionReasonAccepted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "escrowContract",
-          "type": "address"
-        }
-      ],
-      "name": "RequestAccepted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        }
-      ],
-      "name": "RequestRejected",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "projectId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        }
-      ],
-      "name": "RequestSent",
-      "type": "event"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [],
-      "name": "fileCount",
+      "name": "employer",
       "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "milestoneFiles",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "milestoneId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "rid",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "cid",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "milestoneReviewRequestCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "milestoneReviewRequests",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "milestoneId",
-          "type": "uint256"
-        },
         {
           "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "cid",
-          "type": "string"
-        },
-        {
-          "internalType": "bool",
-          "name": "reviewed",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "projectsContract",
-      "outputs": [
-        {
-          "internalType": "contract Projects",
           "name": "",
           "type": "address"
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
-      "name": "requestCount",
+      "name": "freelancer",
       "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "requests",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "projectId",
-          "type": "uint256"
-        },
         {
           "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "freelancerRating",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum RequestManager.RequestStatus",
-          "name": "status",
-          "type": "uint8"
-        },
-        {
-          "internalType": "contract Escrow",
-          "name": "escrowContract",
+          "name": "",
           "type": "address"
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
-      "name": "responseCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "name": "releaseFunds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "reviewResponses",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "milestoneId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "response",
-          "type": "string"
-        },
-        {
-          "internalType": "bool",
-          "name": "accepted",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_projectId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_freelancerRating",
-          "type": "uint256"
-        }
-      ],
-      "name": "sendRequest",
+      "inputs": [],
+      "name": "refund",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -420,25 +74,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_requestId",
+          "name": "_reducedAmount",
           "type": "uint256"
         }
       ],
-      "name": "acceptRequest",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_requestId",
-          "type": "uint256"
-        }
-      ],
-      "name": "rejectRequest",
+      "name": "releaseReducedFunds",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -447,417 +87,26 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_requestId",
+          "name": "milestonePercentage",
           "type": "uint256"
         }
       ],
-      "name": "getRequest",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "projectId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "freelancer",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "freelancerRating",
-              "type": "uint256"
-            },
-            {
-              "internalType": "enum RequestManager.RequestStatus",
-              "name": "status",
-              "type": "uint8"
-            },
-            {
-              "internalType": "contract Escrow",
-              "name": "escrowContract",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct RequestManager.Request",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "viewAllRequests",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "requestIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "projectIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "freelancers",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "freelancerRatings",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "enum RequestManager.RequestStatus[]",
-          "name": "statuses",
-          "type": "uint8[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "escrowContracts",
-          "type": "address[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "viewAllReviewResponses",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "responseIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "milestoneIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "freelancers",
-          "type": "address[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "responses",
-          "type": "string[]"
-        },
-        {
-          "internalType": "bool[]",
-          "name": "acceptedStatuses",
-          "type": "bool[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "viewRequestsByEmployer",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "requestIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "projectIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "freelancers",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "freelancerRatings",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "enum RequestManager.RequestStatus[]",
-          "name": "statuses",
-          "type": "uint8[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "escrowContracts",
-          "type": "address[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_milestoneId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_cid",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "_freelancer",
-          "type": "address"
-        }
-      ],
-      "name": "sendMilestoneReviewRequest",
+      "name": "releaseMilestonePayment",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "viewAllMilestoneReviewRequests",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "requestIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "milestoneIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "freelancers",
-          "type": "address[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "cids",
-          "type": "string[]"
-        },
-        {
-          "internalType": "bool[]",
-          "name": "reviewedStatuses",
-          "type": "bool[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_reviewRequestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_projectId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getEscrowAccountFromReviewRequest",
-      "outputs": [
-        {
-          "internalType": "contract Escrow",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_reviewRequestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_projId",
-          "type": "uint256"
-        }
-      ],
-      "name": "acceptMilestoneReviewRequest",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function",
-      "payable": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_reviewRequestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_reason",
-          "type": "string"
-        }
-      ],
-      "name": "rejectMilestoneReviewRequest",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_reviewRequestId",
-          "type": "uint256"
-        }
-      ],
-      "name": "acceptRejectionReason",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "freelancer",
-          "type": "address"
-        }
-      ],
-      "name": "viewAcceptedProjectsByFreelancer",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "ids",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "names",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "descriptions",
-          "type": "string[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "rewards",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "enum Projects.Status[]",
-          "name": "statuses",
-          "type": "uint8[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "employers",
-          "type": "address[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_milestoneId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_rid",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_cid",
-          "type": "string"
-        }
-      ],
-      "name": "addFile",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_milestoneId",
-          "type": "uint256"
-        }
-      ],
-      "name": "viewAllFilesForMilestone",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "ids",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "milestoneIds",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "names",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "rids",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "cids",
-          "type": "string[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.28+commit.7893614a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_projectsContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"milestoneId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"updatedRating\",\"type\":\"uint256\"}],\"name\":\"MilestoneAccepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"reviewRequestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"MilestoneReviewRequestRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"milestoneId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"}],\"name\":\"MilestoneReviewRequestSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_reviewRequestId\",\"type\":\"uint256\"}],\"name\":\"RejectionReasonAccepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"escrowContract\",\"type\":\"address\"}],\"name\":\"RequestAccepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"RequestRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"RequestSent\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_reviewRequestId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_projId\",\"type\":\"uint256\"}],\"name\":\"acceptMilestoneReviewRequest\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_reviewRequestId\",\"type\":\"uint256\"}],\"name\":\"acceptRejectionReason\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestId\",\"type\":\"uint256\"}],\"name\":\"acceptRequest\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_milestoneId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_rid\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_cid\",\"type\":\"string\"}],\"name\":\"addFile\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fileCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_reviewRequestId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_projectId\",\"type\":\"uint256\"}],\"name\":\"getEscrowAccountFromReviewRequest\",\"outputs\":[{\"internalType\":\"contract Escrow\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestId\",\"type\":\"uint256\"}],\"name\":\"getRequest\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"freelancerRating\",\"type\":\"uint256\"},{\"internalType\":\"enum RequestManager.RequestStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"contract Escrow\",\"name\":\"escrowContract\",\"type\":\"address\"}],\"internalType\":\"struct RequestManager.Request\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"milestoneFiles\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"milestoneId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"rid\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"milestoneReviewRequestCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"milestoneReviewRequests\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"milestoneId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"cid\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"reviewed\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"projectsContract\",\"outputs\":[{\"internalType\":\"contract Projects\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_reviewRequestId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_reason\",\"type\":\"string\"}],\"name\":\"rejectMilestoneReviewRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestId\",\"type\":\"uint256\"}],\"name\":\"rejectRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requestCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"requests\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"freelancerRating\",\"type\":\"uint256\"},{\"internalType\":\"enum RequestManager.RequestStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"contract Escrow\",\"name\":\"escrowContract\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"responseCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"reviewResponses\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"milestoneId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"response\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"accepted\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_milestoneId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_cid\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_freelancer\",\"type\":\"address\"}],\"name\":\"sendMilestoneReviewRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_projectId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_freelancerRating\",\"type\":\"uint256\"}],\"name\":\"sendRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"viewAcceptedProjectsByFreelancer\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"ids\",\"type\":\"uint256[]\"},{\"internalType\":\"string[]\",\"name\":\"names\",\"type\":\"string[]\"},{\"internalType\":\"string[]\",\"name\":\"descriptions\",\"type\":\"string[]\"},{\"internalType\":\"uint256[]\",\"name\":\"rewards\",\"type\":\"uint256[]\"},{\"internalType\":\"enum Projects.Status[]\",\"name\":\"statuses\",\"type\":\"uint8[]\"},{\"internalType\":\"address[]\",\"name\":\"employers\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_milestoneId\",\"type\":\"uint256\"}],\"name\":\"viewAllFilesForMilestone\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"ids\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"milestoneIds\",\"type\":\"uint256[]\"},{\"internalType\":\"string[]\",\"name\":\"names\",\"type\":\"string[]\"},{\"internalType\":\"string[]\",\"name\":\"rids\",\"type\":\"string[]\"},{\"internalType\":\"string[]\",\"name\":\"cids\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"viewAllMilestoneReviewRequests\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"requestIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"milestoneIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address[]\",\"name\":\"freelancers\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"cids\",\"type\":\"string[]\"},{\"internalType\":\"bool[]\",\"name\":\"reviewedStatuses\",\"type\":\"bool[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"viewAllRequests\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"requestIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"projectIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address[]\",\"name\":\"freelancers\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"freelancerRatings\",\"type\":\"uint256[]\"},{\"internalType\":\"enum RequestManager.RequestStatus[]\",\"name\":\"statuses\",\"type\":\"uint8[]\"},{\"internalType\":\"address[]\",\"name\":\"escrowContracts\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"viewAllReviewResponses\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"responseIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"milestoneIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address[]\",\"name\":\"freelancers\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"responses\",\"type\":\"string[]\"},{\"internalType\":\"bool[]\",\"name\":\"acceptedStatuses\",\"type\":\"bool[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"viewRequestsByEmployer\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"requestIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"projectIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address[]\",\"name\":\"freelancers\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"freelancerRatings\",\"type\":\"uint256[]\"},{\"internalType\":\"enum RequestManager.RequestStatus[]\",\"name\":\"statuses\",\"type\":\"uint8[]\"},{\"internalType\":\"address[]\",\"name\":\"escrowContracts\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/RequestManager.sol\":\"RequestManager\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"project:/contracts/Projects.sol\":{\"keccak256\":\"0xe94476808db1d9a277ed0da17638f173d88b3462e0b0418aed4f67dc90def039\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://653c5f8e725aa61803a2cdb616afafe80754cc519e10288f1397596caea2654c\",\"dweb:/ipfs/QmSCBsfLkBLDvWyaWoH1SJABYsaWQibz199ReLza1wjVia\"]},\"project:/contracts/RequestManager.sol\":{\"keccak256\":\"0x2de97eb8feb43f751daaf27ac53ad2d4046dcdfa8675473bfc717f183b2ec55b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5d4a0cb7102d5e0d640e4b979e85853c6024752cdb75277704b0a606624b23a3\",\"dweb:/ipfs/QmY7iSS5ZHCXvataxG7Nx3LbKHofHLCT6xrHj8MWhmddry\"]}},\"version\":1}",
-  "bytecode": "0x6080346070576135ce80380390601f19601f83011683019183831067ffffffffffffffff84111760755780849260209460405283398101031260705751600160a060020a0381169081900360705760008054600160a060020a03191691909117905560405161352990816100a58239f35b600080fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fdfe610200604052600436101561001357600080fd5b6000610160527c0100000000000000000000000000000000000000000000000000000000610160513504806313e432481461219e5780631a79631514611bb15780632d7788db14611ac557806331eb2af41461196a5780633a760554146117d357806343953519146117b35780634ba1f098146115275780634bd335b8146114fc5780634d758c29146111545780635badbe4c146111345780635fc9fe37146110e55780637e670ea21461104057806381d12c5814610fcf57806386fe6d4f14610ed557806394e1502914610eb55780639be8d8f914610e13578063a7080a1814610d06578063a817229a14610bcd578063b3db5c94146108f3578063b4d4fcb7146107d4578063bb6866e114610770578063c5597bbb14610750578063c58343ef14610646578063c6285100146101855763ed3bb6801461015457600080fd5b3461017e57602061016d61016736612521565b90612d51565b600160a060020a0360405191168152f35b6101605180fd5b3461017e57608036600319011261017e5760043560243567ffffffffffffffff811161017e576101b9903690600401612885565b60443567ffffffffffffffff811161017e576101d9903690600401612885565b9160643567ffffffffffffffff811161017e576101fa903690600401612885565b91600454916040519261020c84612641565b83526020830190808252604084019283526060840195865260808401948552610160515260036020526040610160512080546801000000000000000081101561047c5761025e91600182018155612776565b93909361062757518355516001830155518051600283019167ffffffffffffffff821161047c5761028f8354612603565b601f81116105d8575b5060209082906001601f831114610566576102cb9282916101605192610499575b50509060080260020a60001904191690565b906002021790555b60038101925192835167ffffffffffffffff811161047c576102f58254612603565b601f8111610517575b5060206001601f8311146104a4578180610331926004979861016051926104995750509060080260020a60001904191690565b906002021790555b01905180519067ffffffffffffffff821161047c576103588354612603565b601f811161042d575b5060209082906001601f8311146103bb5761039392829161016051926103b05750509060080260020a60001904191690565b906002021790555b6103a66004546128a0565b6004556101605180f35b0151905085806102b9565b9050601f1983169184610160515280610160512092610160515b818110610415575091600293918560019694106103f9575b5050500201905561039b565b01516008601f84160260020a60001904191690558480806103ed565b919360206001819287870151815501950192016103d5565b836101605152602061016051206020601f85010481019160208510610472575b601f602091010401905b8181106104645750610361565b610160518155600101610457565b909150819061044d565b60e060020a634e487b710261016051526041600452602461016051fd5b0151905088806102b9565b601f1982169083610160515280610160512091610160515b8181106104ff575091600496978492600195600295106104e3575b50505002019055610339565b01516008601f84160260020a60001904191690558780806104d7565b9192602060018192868c0151815501940192016104bc565b826101605152602061016051206020601f8401048101916020841061055c575b601f602091010401905b81811061054e57506102fe565b610160518155600101610541565b9091508190610537565b9050601f1983169184610160515280610160512092610160515b8181106105c0575091600293918560019694106105a4575b505050020190556102d3565b01516008601f84160260020a6000190419169055878080610598565b91936020600181928787015181550195019201610580565b836101605152602061016051206020601f8501048101916020851061061d575b601f602091010401905b81811061060f5750610298565b610160518155600101610602565b90915081906105f8565b60e060020a634e487b7102610160515261016051600452602461016051fd5b3461017e57602036600319011261017e5760043560405161066681612641565b61016051815261016051602082015261016051604082015261016051606082015260806101605191015280610160515260056020526106b9600160a060020a036001604061016051200154161515612c46565b6101605152600560205260a060406101605120600160a060020a03604051916106e183612641565b80548352610747826001830154166020850190815260036002840154936040870194855201549284606087019261071b60ff8716856129e3565b8161010060808a0197041686526040519751885251166020870152516040860152516060850190612459565b51166080820152f35b3461017e576101605136600319011261017e576020600254604051908152f35b3461017e57602036600319011261017e57600435610160515260076020526040610160512080546107d0600183015492600160a060020a036002820154169060ff60046107bf60038401612698565b92015416916040519586958661273b565b0390f35b3461017e576101605136600319011261017e576002546107f38161299e565b6107fc8261299e565b916108068161299e565b61080f82612cb5565b906108198361299e565b9260015b81811115610839575050906107d09291604051958695866127ab565b8061016051526001602052604061016051209081546000198201908282116108d65760ff60046108d1956108c793610871868e6129d0565b526001810154610881868f6129d0565b526002810154600160a060020a031661089a868b6129d0565b526108a760038201612698565b6108b1868c6129d0565b526108bc858b6129d0565b5001541691886129d0565b90151590526128a0565b61081d565b60e060020a634e487b710261016051526011600452602461016051fd5b3461017e5761090136612521565b9080151580610b3d575b15610af657600160a060020a036101605154166040519060e360020a631e1e7e590282528260048301528160248161016051935afa908115610ae8576101605191610abd575b506002811015610a5957600103610a765761096d6006546128a0565b9081600655600360405161098081612641565b828152602081019433865260408201908152600160a060020a03606083019661016051885260808401966101605188526101605152600560205260406101605120935184555116600160a060020a03600184019116600160a060020a0319825416179055516002820155019251916003831015610a59577fe697eb68c0228bd7d4e553246a2a86e8402d0895e45092ef8ae87b4cfd29f01693600160a060020a03610a3c9260609560ff80198554169116178355511690612cff565b600654906040519182526020820152336040820152a16101605180f35b60e060020a634e487b710261016051526021600452602461016051fd5b606460405160e560020a62461bcd02815260206004820152601360248201527f50726f6a656374206973206e6f74206f70656e000000000000000000000000006044820152fd5b610adc91503d8061016051833e610ad48183612676565b81019061290a565b50935050505083610951565b6040513d61016051823e3d90fd5b606460405160e560020a62461bcd02815260206004820152601260248201527f496e76616c69642070726f6a65637420494400000000000000000000000000006044820152fd5b5060046020600160a060020a03610160515416604051928380927f36fbad260000000000000000000000000000000000000000000000000000000082525afa908115610ae8576101605191610b96575b5081111561090b565b90506020813d602011610bc5575b81610bb160209383612676565b81010312610bc0575183610b8d565b600080fd5b3d9150610ba4565b3461017e57602036600319011261017e57600435806101605152600760205260406101605120600160a060020a036002820154163303610c99576004019081549060ff8216610c52577f25fa961293610a63a633d14b93d5aa91df30ab4131e3e197fbb148988f45f2fa92600160209360ff1916179055604051908152a16101605180f35b606460405160e560020a62461bcd02815260206004820152601f60248201527f526576696577207265717565737420616c7265616479207265766965776564006044820152fd5b608460405160e560020a62461bcd02815260206004820152603360248201527f4f6e6c792074686520667265656c616e6365722063616e20616363657074207460448201527f68652072656a656374696f6e20726561736f6e000000000000000000000000006064820152fd5b3461017e576101605136600319011261017e57600654610d258161299e565b610d2e8261299e565b91610d388161299e565b610d418261299e565b610d4a8361299e565b91610d548461299e565b9360015b81811115610d75575050906107d09392916040519687968761247f565b8061016051526005602052604061016051209060001981018181116108d657610e08600160a060020a036101006003610e0e968e878f88610db5916129d0565b52815490610dc49088906129d0565b5260018101548416610dd6878c6129d0565b526002810154610de6878d6129d0565b520154610dff60ff8216610dfa878e6129d0565b6129e3565b041691896129d0565b526128a0565b610d58565b3461017e576101605136600319011261017e57600854610e328161299e565b610e3b8261299e565b91610e458161299e565b610e4e82612cb5565b90610e588361299e565b9260015b81811115610e78575050906107d09291604051958695866127ab565b8061016051526007602052604061016051209081546000198201908282116108d65760ff6004610eb0956108c793610871868e6129d0565b610e5c565b3461017e576101605136600319011261017e576020600854604051908152f35b3461017e57606036600319011261017e5760043560243567ffffffffffffffff811161017e57610f09903690600401612537565b909190604435600160a060020a0381169081900361017e577fbfc58ffde775327d37ac02c637219967f9f1d0d5dae07e75af5d1ad5be35436093610fa3610fc592610f556008546128a0565b8060085560405191610f6683612641565b8183528760208401526040830152610f7f36878661284e565b60608301526101605160808301526101605152600760205260406101605120612ac9565b6008549260405194859485526020850152606060408501526060840191612c94565b0390a16101605180f35b3461017e57602036600319011261017e576004356101605152600560205260a060406101605120600160a060020a0361010082549282600182015416906003600282015491015491604051958652602086015260408501526110376060850160ff8316612459565b04166080820152f35b3461017e5761104e36612521565b90610160515260036020526040610160512090815481101561017e5761107391612776565b5080546107d06001830154926110d761108e60028301612698565b916110c96110aa60046110a360038501612698565b9301612698565b936040519788978852602088015260a0604088015260a0870190612588565b908582036060870152612588565b908382036080850152612588565b3461017e57602036600319011261017e57600435610160515260016020526040610160512080546107d0600183015492600160a060020a036002820154169060ff60046107bf60038401612698565b3461017e576101605136600319011261017e576020600654604051908152f35b3461017e57602036600319011261017e57600435600160a060020a038116810361017e576006546111848161299e565b9161118e82612cb5565b9061119883612cb5565b60e0526111a48361299e565b60c0526111b08361299e565b60a0526111bc8361299e565b608052610160519260015b81811115611386575050506111db8261299e565b916111e581612cb5565b6111ee82612cb5565b906111f88361299e565b926112028161299e565b9461120c8261299e565b97610160515b8381106112c15750505050611268929161124c61125a9261123e6040519860c08a5260c08a01906123e8565b9088820360208a01526125ad565b9086820360408801526125ad565b9084820360608601526123e8565b82810360808401526020808351928381520192019061016051905b80821061129e5784806107d0868983820360a085015261241c565b9091928351906002821015610a5957602081600193829352019401920190611283565b6112cb81836129d0565b516112d6828b6129d0565b526112e181846129d0565b516112ec82876129d0565b526112f781866129d0565b506113048160e0516129d0565b5161130f82886129d0565b5261131a81876129d0565b506113278160c0516129d0565b5161133282896129d0565b5261133f8160a0516129d0565b51906002821015610a595761135f60019261135a838c6129d0565b612d45565b600160a060020a03611373826080516129d0565b511661137f828d6129d0565b5201611212565b80610160515260056020526040610160512060ff6003820154166003811015610a5957600114806114dd575b6113c6575b506113c1906128a0565b6111c7565b9094600160a060020a036101605154169154916040519260e360020a631e1e7e5902845260048401528260248161016051935afa908115610ae857876114a2926113c19461016051610160516101605190610160519287610160519561016051976114a9575b5061143b9061148597986129d0565b52611446878d6129d0565b52611451868c6129d0565b5061145e8660e0516129d0565b5261146b8560e0516129d0565b506114788560c0516129d0565b5261135a8460a0516129d0565b600160a060020a03611499836080516129d0565b911690526128a0565b94906113b7565b9250935050611485945061143b93506114cf91503d8061016051833e610ad48183612676565b97509590949193919061142c565b50600160a060020a038416600160a060020a03600183015416146113b2565b3461017e576101605136600319011261017e576020600160a060020a03610160515416604051908152f35b602036600319011261017e57600435806101605152600560205260406101605120906001820190600160a060020a03825416611564811515612c46565b600384019360ff8554166003811015610a595761176c57600160a060020a036101605154169054906040519160e360020a631e1e7e5902835260048301528160248161016051935afa918215610ae857610160519283928391611738575b50600160a060020a0316918233036116cb576002811015610a59576001036116845760405191610649908184019084821067ffffffffffffffff83111761047c576040938593612eab853982526020820152030191f0928315610ae857600160a060020a03610100816060956116597fac8064fea85b95641f19e230ba9da498102d474473fe4b103466cb224daf5e019886612cff565b845460ff19166001179485905554604080519687529116602086015292041690820152a16101605180f35b606460405160e560020a62461bcd02815260206004820152601460248201527f50726f6a656374206d757374206265206f70656e0000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520656d706c6f7965722063616e206163636570742074686560448201527f20726571756573740000000000000000000000000000000000000000000000006064820152fd5b9050600160a060020a03935061175c9192503d8061016051833e610ad48183612676565b95945095925090509392906115c2565b606460405160e560020a62461bcd02815260206004820152601660248201527f52657175657374206973206e6f742070656e64696e67000000000000000000006044820152fd5b3461017e576101605136600319011261017e576020600454604051908152f35b3461017e57602036600319011261017e576004356004546117f38161299e565b906117fd8161299e565b61180682612cb5565b9061181083612cb5565b9261181a81612cb5565b610160519096815b83811061188957611851886107d08b61187b8b61186d8c61185f8d604051998a9960a08b5260a08b01906123e8565b9089820360208b01526123e8565b9087820360408901526125ad565b9085820360608701526125ad565b9083820360808501526125ad565b81610160515260036020528160016118a78360406101605120612776565b500154146118b8575b600101611822565b91611962600191836101605152600360205261194760046118df8760406101605120612776565b5080546118ec858f6129d0565b52858101546118fb858c6129d0565b5261190860028201612698565b611912858d6129d0565b5261191d848c6129d0565b508b6119358561192f60038501612698565b926129d0565b52611940848d6129d0565b5001612698565b611951828d6129d0565b5261195c818c6129d0565b506128a0565b9290506118b0565b3461017e57604036600319011261017e5760043560243567ffffffffffffffff811161017e5761199e903690600401612537565b9082610160515260076020526040610160512091600483019283549060ff8216611a7e577fbaaa1d8ac25adbe9d68fdf1013f60ea647f91e457fb4589976b74dbf9c14968f946001611a5d9360ff1916179055600160a060020a036002600183015492015416611a0f6002546128a0565b908160025560405192611a2184612641565b82845260208401526040830152611a3936858761284e565b60608301526101605160808301526101605152600160205260406101605120612ac9565b611a74604051928392602084526020840191612c94565b0390a26101605180f35b606460405160e560020a62461bcd02815260206004820152602060248201527f526576696577207265717565737420616c72656164792070726f6365737365646044820152fd5b3461017e57602036600319011261017e5760043580610160515260056020526040610160512060036001820191611b07600160a060020a038454161515612c46565b019160ff8354166003811015610a5957611b6a57825460ff19166002179092555460408051928352600160a060020a039190911660208301527f490ad67e4c8b3b9c1d11dfcd7f02e155190b8f6feff3a9d9e9df3721f0f74e5791a16101605180f35b606460405160e560020a62461bcd02815260206004820152601960248201527f5265717565737420616c72656164792070726f636573736564000000000000006044820152fd5b611bba36612521565b81610160515260076020526040610160512061010052600461010051019081549060ff821661215757600161010051015492600160a060020a0361016051541692604051937f42c549c00000000000000000000000000000000000000000000000000000000085528360048601528460248161016051935afa948515610ae857610160516101e0819052958695869283928392839291611f64575b5061016051998a805b8251811015611f525783611c7282856129d0565b5114611c8057600101611c5e565b9594611cc09798999a9b9c50869350611cb99250839150611cb382611cb396611cb38260019d611cb3826101e0516129d0565b506129d0565b51996129d0565b505b15611f0b5760019060ff19161790556002610100510192600160a060020a0384541691600160a060020a036101605154166040517f3a766ddf000000000000000000000000000000000000000000000000000000008152846004820152602081602481855afa908115610ae8576101605191611ed9575b50856005026005810487036108d6576064900481018091116108d6576101f48111611ed0575b813b1561017e57604051947f063dca0c0000000000000000000000000000000000000000000000000000000086526004860152602485015283604481610160519361016051905af1918215610ae857600160a060020a0393611dc693611ebd575b50612d51565b16803b1561017e57604051917fcd0c15bf000000000000000000000000000000000000000000000000000000008352600483015281602481610160519361016051905af18015610ae857611ea2575b611e9b82600160a060020a036001610100510154915416611e376002546128a0565b908160025560405192611e4984612641565b82845260208401526040830152610160515061016051506101605150604051611e73602082612676565b6101605181526060830152600160808301526101605152600160205260406101605120612ac9565b6101605180f35b61016051611eaf91612676565b6101605161017e5781611e15565b61016051611eca91612676565b86611dc0565b506101f4611d5f565b90506020813d602011611f03575b81611ef460209383612676565b8101031261017e575187611d39565b3d9150611ee7565b606460405160e560020a62461bcd02815260206004820152601860248201527f4d696c6573746f6e6520646f6573206e6f7420657869737400000000000000006044820152fd5b509a9697989950505050505050611cc2565b99509750505050503d8061016051873e611f7e8187612676565b61010086828101031261017e57855167ffffffffffffffff811161017e57611fab908288019088016129ef565b94602087015167ffffffffffffffff811161017e57611fcf908389019089016129ef565b50604087015167ffffffffffffffff811161017e57611ff390838901908901612a4b565b96606081015167ffffffffffffffff811161017e5761201790848301908301612a4b565b92608082015167ffffffffffffffff811161017e5761203b908284019084016129ef565b9360a083015167ffffffffffffffff811161017e5761205f908385019085016129ef565b9160c084015167ffffffffffffffff811161017e57840161018052808401601f6101805101121561017e5761018051516101c05261209f6101c051612986565b936120ad6040519586612676565b846101a0526101c0518552602085016101a0526020806101c0510261018051010161014052818101610140511161017e5760206101805101610120525b6101405161012051106121295760e081015167ffffffffffffffff811161017e576121189282019101612a4b565b98996101e05293909197928b611c55565b6101205151801515810361017e576101a0515260206101a051016101a05260206101205101610120526120ea565b606460405160e560020a62461bcd02815260206004820152601f60248201527f526576696577207265717565737420616c7265616479206163636570746564006044820152fd5b3461017e576101605136600319011261017e57610160516006548154909190600160a060020a031660015b8381111561234c57506121db8261299e565b906121e58361299e565b926121ef8161299e565b6121f88261299e565b9061220b6122058461299e565b9361299e565b93610160519060015b89811115612232575050506107d0949596506040519687968761247f565b806101605152600560205260406101605120546040519060e360020a631e1e7e5902825260048201526101605181602481865afa908115610ae85789918b916101605191612329575b50600160a060020a0316331461229c575b5050612297906128a0565b612214565b93600160a060020a03610100600361231f9486986122979761016051526005602052896122d08760406101605120946129d0565b526122dd868354926129d0565b52836001820154166122ef868c6129d0565b5260028101546122ff868d6129d0565b52015461231360ff8216610dfa868e6129d0565b0416610e08828b6129d0565b929050878961228c565b61234091503d8061016051833e610ad48183612676565b9450505050508d61227b565b806101605152600560205260406101605120546040519060e360020a631e1e7e5902825260048201526101605181602481865afa908115610ae85761016051916123c5575b50600160a060020a031633146123b0575b6123ab906128a0565b6121c9565b916123bd6123ab916128a0565b9290506123a2565b6123dc91503d8061016051833e610ad48183612676565b94505050505085612391565b906020808351928381520192019060005b8181106124065750505090565b82518452602093840193909201916001016123f9565b906020808351928381520192019060005b81811061243a5750505090565b8251600160a060020a031684526020938401939092019160010161242d565b9060038210156124665752565b60e060020a634e487b7102600052602160045260246000fd5b96959391926124ae6124ca946124a06124bc9460c08c5260c08c01906123e8565b908a820360208c01526123e8565b9088820360408a015261241c565b9086820360608801526123e8565b9380850360808201526020808451968781520193016000955b8087106125025750506124ff93945060a081840391015261241c565b90565b9093602080826125156001948951612459565b019501960195906124e3565b6040906003190112610bc0576004359060243590565b9181601f84011215610bc05782359167ffffffffffffffff8311610bc05760208381860195010111610bc057565b60005b8381106125785750506000910152565b8181015183820152602001612568565b906020916125a181518092818552858086019101612565565b601f01601f1916010190565b805180835260208181028401810193928101926000918101905b8383106125d657505050505090565b90919293946020806125f4600193601f198682030187528951612588565b970193019301919392906125c7565b9060016002830492168015612637575b602083101461261e57565b60e060020a634e487b7102600052602260045260246000fd5b91607f1691612613565b60a0810190811067ffffffffffffffff82111761265d57604052565b60e060020a634e487b7102600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761265d57604052565b90604051918260008254926126ac84612603565b808452936001811690811561271a57506001146126d3575b506126d192500383612676565b565b90506000929192526020600020906000915b8183106126fe5750509060206126d192820101386126c4565b60209193508060019154838589010152019101909184926126e5565b9050602092506126d194915060ff19168284015215158102820101386126c4565b939060809361276e93600160a060020a03929897988752602087015216604085015260a0606085015260a0840190612588565b931515910152565b8054821015612792576000526005602060002091020190600090565b60e060020a634e487b7102600052603260045260246000fd5b9391926127d86127f4946127ca6127e69460a0895260a08901906123e8565b9087820360208901526123e8565b90858203604087015261241c565b9083820360608501526125ad565b9060808183039101526020808351928381520192019060005b81811061281a5750505090565b8251151584526020938401939092019160010161280d565b67ffffffffffffffff811161265d57601f01601f191660200190565b92919261285a82612832565b916128686040519384612676565b829481845281830111610bc0578281602093846000960137010152565b9080601f83011215610bc0578160206124ff9335910161284e565b60001981146128af5760010190565b60e060020a634e487b7102600052601160045260246000fd5b81601f82011215610bc05780516128de81612832565b926128ec6040519485612676565b81845260208284010111610bc0576124ff9160208085019101612565565b60c081830312610bc057805192602082015167ffffffffffffffff8111610bc057836129379184016128c8565b9260408301519067ffffffffffffffff8211610bc0576129589184016128c8565b9160608101519160808201516002811015610bc05760a090920151600160a060020a0381168103610bc05790565b67ffffffffffffffff811161265d5760208091020190565b906129a882612986565b6129b56040519182612676565b82815280926129c6601f1991612986565b0190602036910137565b8051821015612792576020809202010190565b60038210156124665752565b9080601f83011215610bc0578151612a0681612986565b92612a146040519485612676565b8184526020808086019302820101928311610bc057602001905b828210612a3b5750505090565b8151815260209182019101612a2e565b9080601f83011215610bc0578151612a6281612986565b92612a706040519485612676565b818452602080808601930282010191838311610bc05760208201905b838210612a9b57505050505090565b815167ffffffffffffffff8111610bc057602091612abe878480948801016128c8565b815201910190612a8c565b8151815560208201516001820155600160a060020a03604083015116600160a060020a03600283019116600160a060020a031982541617905560038101606083015180519067ffffffffffffffff821161265d57612b278354612603565b601f8111612bfd575b50602090601f8311600114612b8d5791612b6681806004969460809896600092612b825750509060080260020a60001904191690565b906002021790555b01910151151560ff80198354169116179055565b0151905038806102b9565b601f1983169184600052806000209260005b818110612be5575093600495936001936002938360809a9810612bc9575b50505002019055612b6e565b01516008601f84160260020a6000190419169055388080612bbd565b91936020600181928787015181550195019201612b9f565b8360005260206000206020601f85010481019160208510612c3c575b601f602091010401905b818110612c305750612b30565b60008155600101612c23565b9091508190612c19565b15612c4d57565b606460405160e560020a62461bcd02815260206004820152601d60248201527f4e6f20726571756573742065786973747320666f7220746869732049440000006044820152fd5b908060209392818452848401376000828201840152601f01601f1916010190565b90612cbf82612986565b612ccc6040519182612676565b8281528092612cdd601f1991612986565b019060005b828110612cee57505050565b806060602080938501015201612ce2565b9074ffffffffffffffffffffffffffffffffffffffff00610100600160a060020a038454931602169074ffffffffffffffffffffffffffffffffffffffff001916179055565b60028210156124665752565b6000526007602052604060002090815415612e63576006549160005b838110612de157608460405160e560020a62461bcd02815260206004820152603160248201527f4e6f206d61746368696e67207265717565737420666f756e6420666f7220746860448201527f69732072657669657720726571756573740000000000000000000000000000006064820152fd5b80600052600560205260406000208381541480612e40575b80612e26575b612e0c5750600101612d6d565b600301546101009004600160a060020a0316949350505050565b5060ff600382015416600381101561246657600114612dff565b50600160a060020a03600182015416600160a060020a0360028501541614612df9565b606460405160e560020a62461bcd02815260206004820152601d60248201527f526576696577207265717565737420646f6573206e6f742065786973740000006044820152fdfe608061064980380390601f19601f83011683019183831067ffffffffffffffff841117608b5780849260409485528339810103126086576047602060418360ba565b920160ba565b60008054600160a060020a03938416600160a060020a031991821617909155600180549290931691161790553460025560405161057b90816100ce8239f35b600080fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b5190600160a060020a038216820360865756fe6080604052600436101561001257600080fd5b7c010000000000000000000000000000000000000000000000000000000060003504806345ad1a2e1461039e578063590e1ae3146102a757806369d8957514610243578063a37dda2c1461021c578063aa8c217c146101fe578063ae200e79146101d75763cd0c15bf1461008557600080fd5b346101d25760203660031901126101d257600254600435811561018b57808202908282040361015c57606490049081116100ef57600080808093600160a060020a038254168282156100e6575bf1156100da57005b6040513d6000823e3d90fd5b506108fc6100d2565b608460405160e560020a62461bcd02815260206004820152602860248201527f4d696c6573746f6e65207061796d656e74206578636565647320657363726f7760448201527f2062616c616e63650000000000000000000000000000000000000000000000006064820152fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b606460405160e560020a62461bcd02815260206004820152601c60248201527f496e73756666696369656e742066756e647320696e20657363726f77000000006044820152fd5b600080fd5b346101d25760003660031901126101d2576020600160a060020a0360015416604051908152f35b346101d25760003660031901126101d2576020600254604051908152f35b346101d25760003660031901126101d2576020600160a060020a0360005416604051908152f35b346101d25760003660031901126101d25761026a600160a060020a03600154163314610483565b6000808080600254801561027e81156104f7565b600160a060020a0383541690839061029e575bf1156100da576000600255005b506108fc610291565b346101d25760003660031901126101d257600160a060020a0360005416803303610331576002549081156102ea576000808093819382f1156100da576000600255005b606460405160e560020a62461bcd02815260206004820152601260248201527f4e6f2066756e647320746f20726566756e6400000000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520667265656c616e6365722063616e20726571756573742060448201527f6120726566756e640000000000000000000000000000000000000000000000006064820152fd5b346101d25760203660031901126101d2576004356103c8600160a060020a03600154163314610483565b6002546103d68115156104f7565b811161041657600080808084600160a060020a0382541682821561040d575bf1156100da5760025490810390811161015c57600255005b506108fc6103f5565b608460405160e560020a62461bcd02815260206004820152602560248201527f5265647563656420616d6f756e74206578636565647320657363726f7720626160448201527f6c616e63650000000000000000000000000000000000000000000000000000006064820152fd5b1561048a57565b608460405160e560020a62461bcd02815260206004820152602360248201527f4f6e6c792074686520656d706c6f7965722063616e2072656c6561736520667560448201527f6e647300000000000000000000000000000000000000000000000000000000006064820152fd5b156104fe57565b606460405160e560020a62461bcd02815260206004820152601360248201527f4e6f2066756e647320746f2072656c65617365000000000000000000000000006044820152fdfea2646970667358221220339eb03c11d158ae53389880db6868fa2c783f5e5b14a853e06679c4dd7b5bfd64736f6c634300081c0033a2646970667358221220b289c263b9a17c35c00e35809f2551c1b81a840ec9fec903651dded444de985764736f6c634300081c0033",
-  "deployedBytecode": "0x610200604052600436101561001357600080fd5b6000610160527c0100000000000000000000000000000000000000000000000000000000610160513504806313e432481461219e5780631a79631514611bb15780632d7788db14611ac557806331eb2af41461196a5780633a760554146117d357806343953519146117b35780634ba1f098146115275780634bd335b8146114fc5780634d758c29146111545780635badbe4c146111345780635fc9fe37146110e55780637e670ea21461104057806381d12c5814610fcf57806386fe6d4f14610ed557806394e1502914610eb55780639be8d8f914610e13578063a7080a1814610d06578063a817229a14610bcd578063b3db5c94146108f3578063b4d4fcb7146107d4578063bb6866e114610770578063c5597bbb14610750578063c58343ef14610646578063c6285100146101855763ed3bb6801461015457600080fd5b3461017e57602061016d61016736612521565b90612d51565b600160a060020a0360405191168152f35b6101605180fd5b3461017e57608036600319011261017e5760043560243567ffffffffffffffff811161017e576101b9903690600401612885565b60443567ffffffffffffffff811161017e576101d9903690600401612885565b9160643567ffffffffffffffff811161017e576101fa903690600401612885565b91600454916040519261020c84612641565b83526020830190808252604084019283526060840195865260808401948552610160515260036020526040610160512080546801000000000000000081101561047c5761025e91600182018155612776565b93909361062757518355516001830155518051600283019167ffffffffffffffff821161047c5761028f8354612603565b601f81116105d8575b5060209082906001601f831114610566576102cb9282916101605192610499575b50509060080260020a60001904191690565b906002021790555b60038101925192835167ffffffffffffffff811161047c576102f58254612603565b601f8111610517575b5060206001601f8311146104a4578180610331926004979861016051926104995750509060080260020a60001904191690565b906002021790555b01905180519067ffffffffffffffff821161047c576103588354612603565b601f811161042d575b5060209082906001601f8311146103bb5761039392829161016051926103b05750509060080260020a60001904191690565b906002021790555b6103a66004546128a0565b6004556101605180f35b0151905085806102b9565b9050601f1983169184610160515280610160512092610160515b818110610415575091600293918560019694106103f9575b5050500201905561039b565b01516008601f84160260020a60001904191690558480806103ed565b919360206001819287870151815501950192016103d5565b836101605152602061016051206020601f85010481019160208510610472575b601f602091010401905b8181106104645750610361565b610160518155600101610457565b909150819061044d565b60e060020a634e487b710261016051526041600452602461016051fd5b0151905088806102b9565b601f1982169083610160515280610160512091610160515b8181106104ff575091600496978492600195600295106104e3575b50505002019055610339565b01516008601f84160260020a60001904191690558780806104d7565b9192602060018192868c0151815501940192016104bc565b826101605152602061016051206020601f8401048101916020841061055c575b601f602091010401905b81811061054e57506102fe565b610160518155600101610541565b9091508190610537565b9050601f1983169184610160515280610160512092610160515b8181106105c0575091600293918560019694106105a4575b505050020190556102d3565b01516008601f84160260020a6000190419169055878080610598565b91936020600181928787015181550195019201610580565b836101605152602061016051206020601f8501048101916020851061061d575b601f602091010401905b81811061060f5750610298565b610160518155600101610602565b90915081906105f8565b60e060020a634e487b7102610160515261016051600452602461016051fd5b3461017e57602036600319011261017e5760043560405161066681612641565b61016051815261016051602082015261016051604082015261016051606082015260806101605191015280610160515260056020526106b9600160a060020a036001604061016051200154161515612c46565b6101605152600560205260a060406101605120600160a060020a03604051916106e183612641565b80548352610747826001830154166020850190815260036002840154936040870194855201549284606087019261071b60ff8716856129e3565b8161010060808a0197041686526040519751885251166020870152516040860152516060850190612459565b51166080820152f35b3461017e576101605136600319011261017e576020600254604051908152f35b3461017e57602036600319011261017e57600435610160515260076020526040610160512080546107d0600183015492600160a060020a036002820154169060ff60046107bf60038401612698565b92015416916040519586958661273b565b0390f35b3461017e576101605136600319011261017e576002546107f38161299e565b6107fc8261299e565b916108068161299e565b61080f82612cb5565b906108198361299e565b9260015b81811115610839575050906107d09291604051958695866127ab565b8061016051526001602052604061016051209081546000198201908282116108d65760ff60046108d1956108c793610871868e6129d0565b526001810154610881868f6129d0565b526002810154600160a060020a031661089a868b6129d0565b526108a760038201612698565b6108b1868c6129d0565b526108bc858b6129d0565b5001541691886129d0565b90151590526128a0565b61081d565b60e060020a634e487b710261016051526011600452602461016051fd5b3461017e5761090136612521565b9080151580610b3d575b15610af657600160a060020a036101605154166040519060e360020a631e1e7e590282528260048301528160248161016051935afa908115610ae8576101605191610abd575b506002811015610a5957600103610a765761096d6006546128a0565b9081600655600360405161098081612641565b828152602081019433865260408201908152600160a060020a03606083019661016051885260808401966101605188526101605152600560205260406101605120935184555116600160a060020a03600184019116600160a060020a0319825416179055516002820155019251916003831015610a59577fe697eb68c0228bd7d4e553246a2a86e8402d0895e45092ef8ae87b4cfd29f01693600160a060020a03610a3c9260609560ff80198554169116178355511690612cff565b600654906040519182526020820152336040820152a16101605180f35b60e060020a634e487b710261016051526021600452602461016051fd5b606460405160e560020a62461bcd02815260206004820152601360248201527f50726f6a656374206973206e6f74206f70656e000000000000000000000000006044820152fd5b610adc91503d8061016051833e610ad48183612676565b81019061290a565b50935050505083610951565b6040513d61016051823e3d90fd5b606460405160e560020a62461bcd02815260206004820152601260248201527f496e76616c69642070726f6a65637420494400000000000000000000000000006044820152fd5b5060046020600160a060020a03610160515416604051928380927f36fbad260000000000000000000000000000000000000000000000000000000082525afa908115610ae8576101605191610b96575b5081111561090b565b90506020813d602011610bc5575b81610bb160209383612676565b81010312610bc0575183610b8d565b600080fd5b3d9150610ba4565b3461017e57602036600319011261017e57600435806101605152600760205260406101605120600160a060020a036002820154163303610c99576004019081549060ff8216610c52577f25fa961293610a63a633d14b93d5aa91df30ab4131e3e197fbb148988f45f2fa92600160209360ff1916179055604051908152a16101605180f35b606460405160e560020a62461bcd02815260206004820152601f60248201527f526576696577207265717565737420616c7265616479207265766965776564006044820152fd5b608460405160e560020a62461bcd02815260206004820152603360248201527f4f6e6c792074686520667265656c616e6365722063616e20616363657074207460448201527f68652072656a656374696f6e20726561736f6e000000000000000000000000006064820152fd5b3461017e576101605136600319011261017e57600654610d258161299e565b610d2e8261299e565b91610d388161299e565b610d418261299e565b610d4a8361299e565b91610d548461299e565b9360015b81811115610d75575050906107d09392916040519687968761247f565b8061016051526005602052604061016051209060001981018181116108d657610e08600160a060020a036101006003610e0e968e878f88610db5916129d0565b52815490610dc49088906129d0565b5260018101548416610dd6878c6129d0565b526002810154610de6878d6129d0565b520154610dff60ff8216610dfa878e6129d0565b6129e3565b041691896129d0565b526128a0565b610d58565b3461017e576101605136600319011261017e57600854610e328161299e565b610e3b8261299e565b91610e458161299e565b610e4e82612cb5565b90610e588361299e565b9260015b81811115610e78575050906107d09291604051958695866127ab565b8061016051526007602052604061016051209081546000198201908282116108d65760ff6004610eb0956108c793610871868e6129d0565b610e5c565b3461017e576101605136600319011261017e576020600854604051908152f35b3461017e57606036600319011261017e5760043560243567ffffffffffffffff811161017e57610f09903690600401612537565b909190604435600160a060020a0381169081900361017e577fbfc58ffde775327d37ac02c637219967f9f1d0d5dae07e75af5d1ad5be35436093610fa3610fc592610f556008546128a0565b8060085560405191610f6683612641565b8183528760208401526040830152610f7f36878661284e565b60608301526101605160808301526101605152600760205260406101605120612ac9565b6008549260405194859485526020850152606060408501526060840191612c94565b0390a16101605180f35b3461017e57602036600319011261017e576004356101605152600560205260a060406101605120600160a060020a0361010082549282600182015416906003600282015491015491604051958652602086015260408501526110376060850160ff8316612459565b04166080820152f35b3461017e5761104e36612521565b90610160515260036020526040610160512090815481101561017e5761107391612776565b5080546107d06001830154926110d761108e60028301612698565b916110c96110aa60046110a360038501612698565b9301612698565b936040519788978852602088015260a0604088015260a0870190612588565b908582036060870152612588565b908382036080850152612588565b3461017e57602036600319011261017e57600435610160515260016020526040610160512080546107d0600183015492600160a060020a036002820154169060ff60046107bf60038401612698565b3461017e576101605136600319011261017e576020600654604051908152f35b3461017e57602036600319011261017e57600435600160a060020a038116810361017e576006546111848161299e565b9161118e82612cb5565b9061119883612cb5565b60e0526111a48361299e565b60c0526111b08361299e565b60a0526111bc8361299e565b608052610160519260015b81811115611386575050506111db8261299e565b916111e581612cb5565b6111ee82612cb5565b906111f88361299e565b926112028161299e565b9461120c8261299e565b97610160515b8381106112c15750505050611268929161124c61125a9261123e6040519860c08a5260c08a01906123e8565b9088820360208a01526125ad565b9086820360408801526125ad565b9084820360608601526123e8565b82810360808401526020808351928381520192019061016051905b80821061129e5784806107d0868983820360a085015261241c565b9091928351906002821015610a5957602081600193829352019401920190611283565b6112cb81836129d0565b516112d6828b6129d0565b526112e181846129d0565b516112ec82876129d0565b526112f781866129d0565b506113048160e0516129d0565b5161130f82886129d0565b5261131a81876129d0565b506113278160c0516129d0565b5161133282896129d0565b5261133f8160a0516129d0565b51906002821015610a595761135f60019261135a838c6129d0565b612d45565b600160a060020a03611373826080516129d0565b511661137f828d6129d0565b5201611212565b80610160515260056020526040610160512060ff6003820154166003811015610a5957600114806114dd575b6113c6575b506113c1906128a0565b6111c7565b9094600160a060020a036101605154169154916040519260e360020a631e1e7e5902845260048401528260248161016051935afa908115610ae857876114a2926113c19461016051610160516101605190610160519287610160519561016051976114a9575b5061143b9061148597986129d0565b52611446878d6129d0565b52611451868c6129d0565b5061145e8660e0516129d0565b5261146b8560e0516129d0565b506114788560c0516129d0565b5261135a8460a0516129d0565b600160a060020a03611499836080516129d0565b911690526128a0565b94906113b7565b9250935050611485945061143b93506114cf91503d8061016051833e610ad48183612676565b97509590949193919061142c565b50600160a060020a038416600160a060020a03600183015416146113b2565b3461017e576101605136600319011261017e576020600160a060020a03610160515416604051908152f35b602036600319011261017e57600435806101605152600560205260406101605120906001820190600160a060020a03825416611564811515612c46565b600384019360ff8554166003811015610a595761176c57600160a060020a036101605154169054906040519160e360020a631e1e7e5902835260048301528160248161016051935afa918215610ae857610160519283928391611738575b50600160a060020a0316918233036116cb576002811015610a59576001036116845760405191610649908184019084821067ffffffffffffffff83111761047c576040938593612eab853982526020820152030191f0928315610ae857600160a060020a03610100816060956116597fac8064fea85b95641f19e230ba9da498102d474473fe4b103466cb224daf5e019886612cff565b845460ff19166001179485905554604080519687529116602086015292041690820152a16101605180f35b606460405160e560020a62461bcd02815260206004820152601460248201527f50726f6a656374206d757374206265206f70656e0000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520656d706c6f7965722063616e206163636570742074686560448201527f20726571756573740000000000000000000000000000000000000000000000006064820152fd5b9050600160a060020a03935061175c9192503d8061016051833e610ad48183612676565b95945095925090509392906115c2565b606460405160e560020a62461bcd02815260206004820152601660248201527f52657175657374206973206e6f742070656e64696e67000000000000000000006044820152fd5b3461017e576101605136600319011261017e576020600454604051908152f35b3461017e57602036600319011261017e576004356004546117f38161299e565b906117fd8161299e565b61180682612cb5565b9061181083612cb5565b9261181a81612cb5565b610160519096815b83811061188957611851886107d08b61187b8b61186d8c61185f8d604051998a9960a08b5260a08b01906123e8565b9089820360208b01526123e8565b9087820360408901526125ad565b9085820360608701526125ad565b9083820360808501526125ad565b81610160515260036020528160016118a78360406101605120612776565b500154146118b8575b600101611822565b91611962600191836101605152600360205261194760046118df8760406101605120612776565b5080546118ec858f6129d0565b52858101546118fb858c6129d0565b5261190860028201612698565b611912858d6129d0565b5261191d848c6129d0565b508b6119358561192f60038501612698565b926129d0565b52611940848d6129d0565b5001612698565b611951828d6129d0565b5261195c818c6129d0565b506128a0565b9290506118b0565b3461017e57604036600319011261017e5760043560243567ffffffffffffffff811161017e5761199e903690600401612537565b9082610160515260076020526040610160512091600483019283549060ff8216611a7e577fbaaa1d8ac25adbe9d68fdf1013f60ea647f91e457fb4589976b74dbf9c14968f946001611a5d9360ff1916179055600160a060020a036002600183015492015416611a0f6002546128a0565b908160025560405192611a2184612641565b82845260208401526040830152611a3936858761284e565b60608301526101605160808301526101605152600160205260406101605120612ac9565b611a74604051928392602084526020840191612c94565b0390a26101605180f35b606460405160e560020a62461bcd02815260206004820152602060248201527f526576696577207265717565737420616c72656164792070726f6365737365646044820152fd5b3461017e57602036600319011261017e5760043580610160515260056020526040610160512060036001820191611b07600160a060020a038454161515612c46565b019160ff8354166003811015610a5957611b6a57825460ff19166002179092555460408051928352600160a060020a039190911660208301527f490ad67e4c8b3b9c1d11dfcd7f02e155190b8f6feff3a9d9e9df3721f0f74e5791a16101605180f35b606460405160e560020a62461bcd02815260206004820152601960248201527f5265717565737420616c72656164792070726f636573736564000000000000006044820152fd5b611bba36612521565b81610160515260076020526040610160512061010052600461010051019081549060ff821661215757600161010051015492600160a060020a0361016051541692604051937f42c549c00000000000000000000000000000000000000000000000000000000085528360048601528460248161016051935afa948515610ae857610160516101e0819052958695869283928392839291611f64575b5061016051998a805b8251811015611f525783611c7282856129d0565b5114611c8057600101611c5e565b9594611cc09798999a9b9c50869350611cb99250839150611cb382611cb396611cb38260019d611cb3826101e0516129d0565b506129d0565b51996129d0565b505b15611f0b5760019060ff19161790556002610100510192600160a060020a0384541691600160a060020a036101605154166040517f3a766ddf000000000000000000000000000000000000000000000000000000008152846004820152602081602481855afa908115610ae8576101605191611ed9575b50856005026005810487036108d6576064900481018091116108d6576101f48111611ed0575b813b1561017e57604051947f063dca0c0000000000000000000000000000000000000000000000000000000086526004860152602485015283604481610160519361016051905af1918215610ae857600160a060020a0393611dc693611ebd575b50612d51565b16803b1561017e57604051917fcd0c15bf000000000000000000000000000000000000000000000000000000008352600483015281602481610160519361016051905af18015610ae857611ea2575b611e9b82600160a060020a036001610100510154915416611e376002546128a0565b908160025560405192611e4984612641565b82845260208401526040830152610160515061016051506101605150604051611e73602082612676565b6101605181526060830152600160808301526101605152600160205260406101605120612ac9565b6101605180f35b61016051611eaf91612676565b6101605161017e5781611e15565b61016051611eca91612676565b86611dc0565b506101f4611d5f565b90506020813d602011611f03575b81611ef460209383612676565b8101031261017e575187611d39565b3d9150611ee7565b606460405160e560020a62461bcd02815260206004820152601860248201527f4d696c6573746f6e6520646f6573206e6f7420657869737400000000000000006044820152fd5b509a9697989950505050505050611cc2565b99509750505050503d8061016051873e611f7e8187612676565b61010086828101031261017e57855167ffffffffffffffff811161017e57611fab908288019088016129ef565b94602087015167ffffffffffffffff811161017e57611fcf908389019089016129ef565b50604087015167ffffffffffffffff811161017e57611ff390838901908901612a4b565b96606081015167ffffffffffffffff811161017e5761201790848301908301612a4b565b92608082015167ffffffffffffffff811161017e5761203b908284019084016129ef565b9360a083015167ffffffffffffffff811161017e5761205f908385019085016129ef565b9160c084015167ffffffffffffffff811161017e57840161018052808401601f6101805101121561017e5761018051516101c05261209f6101c051612986565b936120ad6040519586612676565b846101a0526101c0518552602085016101a0526020806101c0510261018051010161014052818101610140511161017e5760206101805101610120525b6101405161012051106121295760e081015167ffffffffffffffff811161017e576121189282019101612a4b565b98996101e05293909197928b611c55565b6101205151801515810361017e576101a0515260206101a051016101a05260206101205101610120526120ea565b606460405160e560020a62461bcd02815260206004820152601f60248201527f526576696577207265717565737420616c7265616479206163636570746564006044820152fd5b3461017e576101605136600319011261017e57610160516006548154909190600160a060020a031660015b8381111561234c57506121db8261299e565b906121e58361299e565b926121ef8161299e565b6121f88261299e565b9061220b6122058461299e565b9361299e565b93610160519060015b89811115612232575050506107d0949596506040519687968761247f565b806101605152600560205260406101605120546040519060e360020a631e1e7e5902825260048201526101605181602481865afa908115610ae85789918b916101605191612329575b50600160a060020a0316331461229c575b5050612297906128a0565b612214565b93600160a060020a03610100600361231f9486986122979761016051526005602052896122d08760406101605120946129d0565b526122dd868354926129d0565b52836001820154166122ef868c6129d0565b5260028101546122ff868d6129d0565b52015461231360ff8216610dfa868e6129d0565b0416610e08828b6129d0565b929050878961228c565b61234091503d8061016051833e610ad48183612676565b9450505050508d61227b565b806101605152600560205260406101605120546040519060e360020a631e1e7e5902825260048201526101605181602481865afa908115610ae85761016051916123c5575b50600160a060020a031633146123b0575b6123ab906128a0565b6121c9565b916123bd6123ab916128a0565b9290506123a2565b6123dc91503d8061016051833e610ad48183612676565b94505050505085612391565b906020808351928381520192019060005b8181106124065750505090565b82518452602093840193909201916001016123f9565b906020808351928381520192019060005b81811061243a5750505090565b8251600160a060020a031684526020938401939092019160010161242d565b9060038210156124665752565b60e060020a634e487b7102600052602160045260246000fd5b96959391926124ae6124ca946124a06124bc9460c08c5260c08c01906123e8565b908a820360208c01526123e8565b9088820360408a015261241c565b9086820360608801526123e8565b9380850360808201526020808451968781520193016000955b8087106125025750506124ff93945060a081840391015261241c565b90565b9093602080826125156001948951612459565b019501960195906124e3565b6040906003190112610bc0576004359060243590565b9181601f84011215610bc05782359167ffffffffffffffff8311610bc05760208381860195010111610bc057565b60005b8381106125785750506000910152565b8181015183820152602001612568565b906020916125a181518092818552858086019101612565565b601f01601f1916010190565b805180835260208181028401810193928101926000918101905b8383106125d657505050505090565b90919293946020806125f4600193601f198682030187528951612588565b970193019301919392906125c7565b9060016002830492168015612637575b602083101461261e57565b60e060020a634e487b7102600052602260045260246000fd5b91607f1691612613565b60a0810190811067ffffffffffffffff82111761265d57604052565b60e060020a634e487b7102600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761265d57604052565b90604051918260008254926126ac84612603565b808452936001811690811561271a57506001146126d3575b506126d192500383612676565b565b90506000929192526020600020906000915b8183106126fe5750509060206126d192820101386126c4565b60209193508060019154838589010152019101909184926126e5565b9050602092506126d194915060ff19168284015215158102820101386126c4565b939060809361276e93600160a060020a03929897988752602087015216604085015260a0606085015260a0840190612588565b931515910152565b8054821015612792576000526005602060002091020190600090565b60e060020a634e487b7102600052603260045260246000fd5b9391926127d86127f4946127ca6127e69460a0895260a08901906123e8565b9087820360208901526123e8565b90858203604087015261241c565b9083820360608501526125ad565b9060808183039101526020808351928381520192019060005b81811061281a5750505090565b8251151584526020938401939092019160010161280d565b67ffffffffffffffff811161265d57601f01601f191660200190565b92919261285a82612832565b916128686040519384612676565b829481845281830111610bc0578281602093846000960137010152565b9080601f83011215610bc0578160206124ff9335910161284e565b60001981146128af5760010190565b60e060020a634e487b7102600052601160045260246000fd5b81601f82011215610bc05780516128de81612832565b926128ec6040519485612676565b81845260208284010111610bc0576124ff9160208085019101612565565b60c081830312610bc057805192602082015167ffffffffffffffff8111610bc057836129379184016128c8565b9260408301519067ffffffffffffffff8211610bc0576129589184016128c8565b9160608101519160808201516002811015610bc05760a090920151600160a060020a0381168103610bc05790565b67ffffffffffffffff811161265d5760208091020190565b906129a882612986565b6129b56040519182612676565b82815280926129c6601f1991612986565b0190602036910137565b8051821015612792576020809202010190565b60038210156124665752565b9080601f83011215610bc0578151612a0681612986565b92612a146040519485612676565b8184526020808086019302820101928311610bc057602001905b828210612a3b5750505090565b8151815260209182019101612a2e565b9080601f83011215610bc0578151612a6281612986565b92612a706040519485612676565b818452602080808601930282010191838311610bc05760208201905b838210612a9b57505050505090565b815167ffffffffffffffff8111610bc057602091612abe878480948801016128c8565b815201910190612a8c565b8151815560208201516001820155600160a060020a03604083015116600160a060020a03600283019116600160a060020a031982541617905560038101606083015180519067ffffffffffffffff821161265d57612b278354612603565b601f8111612bfd575b50602090601f8311600114612b8d5791612b6681806004969460809896600092612b825750509060080260020a60001904191690565b906002021790555b01910151151560ff80198354169116179055565b0151905038806102b9565b601f1983169184600052806000209260005b818110612be5575093600495936001936002938360809a9810612bc9575b50505002019055612b6e565b01516008601f84160260020a6000190419169055388080612bbd565b91936020600181928787015181550195019201612b9f565b8360005260206000206020601f85010481019160208510612c3c575b601f602091010401905b818110612c305750612b30565b60008155600101612c23565b9091508190612c19565b15612c4d57565b606460405160e560020a62461bcd02815260206004820152601d60248201527f4e6f20726571756573742065786973747320666f7220746869732049440000006044820152fd5b908060209392818452848401376000828201840152601f01601f1916010190565b90612cbf82612986565b612ccc6040519182612676565b8281528092612cdd601f1991612986565b019060005b828110612cee57505050565b806060602080938501015201612ce2565b9074ffffffffffffffffffffffffffffffffffffffff00610100600160a060020a038454931602169074ffffffffffffffffffffffffffffffffffffffff001916179055565b60028210156124665752565b6000526007602052604060002090815415612e63576006549160005b838110612de157608460405160e560020a62461bcd02815260206004820152603160248201527f4e6f206d61746368696e67207265717565737420666f756e6420666f7220746860448201527f69732072657669657720726571756573740000000000000000000000000000006064820152fd5b80600052600560205260406000208381541480612e40575b80612e26575b612e0c5750600101612d6d565b600301546101009004600160a060020a0316949350505050565b5060ff600382015416600381101561246657600114612dff565b50600160a060020a03600182015416600160a060020a0360028501541614612df9565b606460405160e560020a62461bcd02815260206004820152601d60248201527f526576696577207265717565737420646f6573206e6f742065786973740000006044820152fdfe608061064980380390601f19601f83011683019183831067ffffffffffffffff841117608b5780849260409485528339810103126086576047602060418360ba565b920160ba565b60008054600160a060020a03938416600160a060020a031991821617909155600180549290931691161790553460025560405161057b90816100ce8239f35b600080fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b5190600160a060020a038216820360865756fe6080604052600436101561001257600080fd5b7c010000000000000000000000000000000000000000000000000000000060003504806345ad1a2e1461039e578063590e1ae3146102a757806369d8957514610243578063a37dda2c1461021c578063aa8c217c146101fe578063ae200e79146101d75763cd0c15bf1461008557600080fd5b346101d25760203660031901126101d257600254600435811561018b57808202908282040361015c57606490049081116100ef57600080808093600160a060020a038254168282156100e6575bf1156100da57005b6040513d6000823e3d90fd5b506108fc6100d2565b608460405160e560020a62461bcd02815260206004820152602860248201527f4d696c6573746f6e65207061796d656e74206578636565647320657363726f7760448201527f2062616c616e63650000000000000000000000000000000000000000000000006064820152fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b606460405160e560020a62461bcd02815260206004820152601c60248201527f496e73756666696369656e742066756e647320696e20657363726f77000000006044820152fd5b600080fd5b346101d25760003660031901126101d2576020600160a060020a0360015416604051908152f35b346101d25760003660031901126101d2576020600254604051908152f35b346101d25760003660031901126101d2576020600160a060020a0360005416604051908152f35b346101d25760003660031901126101d25761026a600160a060020a03600154163314610483565b6000808080600254801561027e81156104f7565b600160a060020a0383541690839061029e575bf1156100da576000600255005b506108fc610291565b346101d25760003660031901126101d257600160a060020a0360005416803303610331576002549081156102ea576000808093819382f1156100da576000600255005b606460405160e560020a62461bcd02815260206004820152601260248201527f4e6f2066756e647320746f20726566756e6400000000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520667265656c616e6365722063616e20726571756573742060448201527f6120726566756e640000000000000000000000000000000000000000000000006064820152fd5b346101d25760203660031901126101d2576004356103c8600160a060020a03600154163314610483565b6002546103d68115156104f7565b811161041657600080808084600160a060020a0382541682821561040d575bf1156100da5760025490810390811161015c57600255005b506108fc6103f5565b608460405160e560020a62461bcd02815260206004820152602560248201527f5265647563656420616d6f756e74206578636565647320657363726f7720626160448201527f6c616e63650000000000000000000000000000000000000000000000000000006064820152fd5b1561048a57565b608460405160e560020a62461bcd02815260206004820152602360248201527f4f6e6c792074686520656d706c6f7965722063616e2072656c6561736520667560448201527f6e647300000000000000000000000000000000000000000000000000000000006064820152fd5b156104fe57565b606460405160e560020a62461bcd02815260206004820152601360248201527f4e6f2066756e647320746f2072656c65617365000000000000000000000000006044820152fdfea2646970667358221220339eb03c11d158ae53389880db6868fa2c783f5e5b14a853e06679c4dd7b5bfd64736f6c634300081c0033a2646970667358221220b289c263b9a17c35c00e35809f2551c1b81a840ec9fec903651dded444de985764736f6c634300081c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.28+commit.7893614a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_freelancer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_employer\",\"type\":\"address\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"amount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"employer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"freelancer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"refund\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"releaseFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"milestonePercentage\",\"type\":\"uint256\"}],\"name\":\"releaseMilestonePayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_reducedAmount\",\"type\":\"uint256\"}],\"name\":\"releaseReducedFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/RequestManager.sol\":\"Escrow\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"project:/contracts/Projects.sol\":{\"keccak256\":\"0xe94476808db1d9a277ed0da17638f173d88b3462e0b0418aed4f67dc90def039\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://653c5f8e725aa61803a2cdb616afafe80754cc519e10288f1397596caea2654c\",\"dweb:/ipfs/QmSCBsfLkBLDvWyaWoH1SJABYsaWQibz199ReLza1wjVia\"]},\"project:/contracts/RequestManager.sol\":{\"keccak256\":\"0x2de97eb8feb43f751daaf27ac53ad2d4046dcdfa8675473bfc717f183b2ec55b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5d4a0cb7102d5e0d640e4b979e85853c6024752cdb75277704b0a606624b23a3\",\"dweb:/ipfs/QmY7iSS5ZHCXvataxG7Nx3LbKHofHLCT6xrHj8MWhmddry\"]}},\"version\":1}",
+  "bytecode": "0x608061064980380390601f19601f83011683019183831067ffffffffffffffff841117608b5780849260409485528339810103126086576047602060418360ba565b920160ba565b60008054600160a060020a03938416600160a060020a031991821617909155600180549290931691161790553460025560405161057b90816100ce8239f35b600080fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b5190600160a060020a038216820360865756fe6080604052600436101561001257600080fd5b7c010000000000000000000000000000000000000000000000000000000060003504806345ad1a2e1461039e578063590e1ae3146102a757806369d8957514610243578063a37dda2c1461021c578063aa8c217c146101fe578063ae200e79146101d75763cd0c15bf1461008557600080fd5b346101d25760203660031901126101d257600254600435811561018b57808202908282040361015c57606490049081116100ef57600080808093600160a060020a038254168282156100e6575bf1156100da57005b6040513d6000823e3d90fd5b506108fc6100d2565b608460405160e560020a62461bcd02815260206004820152602860248201527f4d696c6573746f6e65207061796d656e74206578636565647320657363726f7760448201527f2062616c616e63650000000000000000000000000000000000000000000000006064820152fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b606460405160e560020a62461bcd02815260206004820152601c60248201527f496e73756666696369656e742066756e647320696e20657363726f77000000006044820152fd5b600080fd5b346101d25760003660031901126101d2576020600160a060020a0360015416604051908152f35b346101d25760003660031901126101d2576020600254604051908152f35b346101d25760003660031901126101d2576020600160a060020a0360005416604051908152f35b346101d25760003660031901126101d25761026a600160a060020a03600154163314610483565b6000808080600254801561027e81156104f7565b600160a060020a0383541690839061029e575bf1156100da576000600255005b506108fc610291565b346101d25760003660031901126101d257600160a060020a0360005416803303610331576002549081156102ea576000808093819382f1156100da576000600255005b606460405160e560020a62461bcd02815260206004820152601260248201527f4e6f2066756e647320746f20726566756e6400000000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520667265656c616e6365722063616e20726571756573742060448201527f6120726566756e640000000000000000000000000000000000000000000000006064820152fd5b346101d25760203660031901126101d2576004356103c8600160a060020a03600154163314610483565b6002546103d68115156104f7565b811161041657600080808084600160a060020a0382541682821561040d575bf1156100da5760025490810390811161015c57600255005b506108fc6103f5565b608460405160e560020a62461bcd02815260206004820152602560248201527f5265647563656420616d6f756e74206578636565647320657363726f7720626160448201527f6c616e63650000000000000000000000000000000000000000000000000000006064820152fd5b1561048a57565b608460405160e560020a62461bcd02815260206004820152602360248201527f4f6e6c792074686520656d706c6f7965722063616e2072656c6561736520667560448201527f6e647300000000000000000000000000000000000000000000000000000000006064820152fd5b156104fe57565b606460405160e560020a62461bcd02815260206004820152601360248201527f4e6f2066756e647320746f2072656c65617365000000000000000000000000006044820152fdfea2646970667358221220339eb03c11d158ae53389880db6868fa2c783f5e5b14a853e06679c4dd7b5bfd64736f6c634300081c0033",
+  "deployedBytecode": "0x6080604052600436101561001257600080fd5b7c010000000000000000000000000000000000000000000000000000000060003504806345ad1a2e1461039e578063590e1ae3146102a757806369d8957514610243578063a37dda2c1461021c578063aa8c217c146101fe578063ae200e79146101d75763cd0c15bf1461008557600080fd5b346101d25760203660031901126101d257600254600435811561018b57808202908282040361015c57606490049081116100ef57600080808093600160a060020a038254168282156100e6575bf1156100da57005b6040513d6000823e3d90fd5b506108fc6100d2565b608460405160e560020a62461bcd02815260206004820152602860248201527f4d696c6573746f6e65207061796d656e74206578636565647320657363726f7760448201527f2062616c616e63650000000000000000000000000000000000000000000000006064820152fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b606460405160e560020a62461bcd02815260206004820152601c60248201527f496e73756666696369656e742066756e647320696e20657363726f77000000006044820152fd5b600080fd5b346101d25760003660031901126101d2576020600160a060020a0360015416604051908152f35b346101d25760003660031901126101d2576020600254604051908152f35b346101d25760003660031901126101d2576020600160a060020a0360005416604051908152f35b346101d25760003660031901126101d25761026a600160a060020a03600154163314610483565b6000808080600254801561027e81156104f7565b600160a060020a0383541690839061029e575bf1156100da576000600255005b506108fc610291565b346101d25760003660031901126101d257600160a060020a0360005416803303610331576002549081156102ea576000808093819382f1156100da576000600255005b606460405160e560020a62461bcd02815260206004820152601260248201527f4e6f2066756e647320746f20726566756e6400000000000000000000000000006044820152fd5b608460405160e560020a62461bcd02815260206004820152602860248201527f4f6e6c792074686520667265656c616e6365722063616e20726571756573742060448201527f6120726566756e640000000000000000000000000000000000000000000000006064820152fd5b346101d25760203660031901126101d2576004356103c8600160a060020a03600154163314610483565b6002546103d68115156104f7565b811161041657600080808084600160a060020a0382541682821561040d575bf1156100da5760025490810390811161015c57600255005b506108fc6103f5565b608460405160e560020a62461bcd02815260206004820152602560248201527f5265647563656420616d6f756e74206578636565647320657363726f7720626160448201527f6c616e63650000000000000000000000000000000000000000000000000000006064820152fd5b1561048a57565b608460405160e560020a62461bcd02815260206004820152602360248201527f4f6e6c792074686520656d706c6f7965722063616e2072656c6561736520667560448201527f6e647300000000000000000000000000000000000000000000000000000000006064820152fd5b156104fe57565b606460405160e560020a62461bcd02815260206004820152601360248201527f4e6f2066756e647320746f2072656c65617365000000000000000000000000006044820152fdfea2646970667358221220339eb03c11d158ae53389880db6868fa2c783f5e5b14a853e06679c4dd7b5bfd64736f6c634300081c0033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
-  "sourceMap": "1802:31441:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;-1:-1:-1;1802:31441:3;;-1:-1:-1;;;;;;1802:31441:3;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;-1:-1:-1;1802:31441:3;;;;;-1:-1:-1;1802:31441:3",
-  "deployedSourceMap": "1802:31441:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::i;:::-;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;31598:187;;1802:31441;;;;;31598:187;;1802:31441;;;;31598:187;;1802:31441;;;;31598:187;;1802:31441;;;;;;31804:14;1802:31441;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;31804:14;1802:31441;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;31908:11;1802:31441;;31908:11;:::i;:::-;1802:31441;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5915:8;1802:31441;;5907:87;-1:-1:-1;;;;;1802:31441:3;;;;;5915:31;1802:31441;;5915:45;;5907:87;:::i;:::-;1802:31441;;;5915:8;1802:31441;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;2602:25;1802:31441;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;2934:70;1802:31441;;;;;;;;;;2934:70;;1802:31441;2934:70;-1:-1:-1;;;;;2934:70:3;;;1802:31441;;2934:70;1802:31441;;2934:70;;;;;:::i;:::-;;;1802:31441;;;;;;;;;;:::i;:::-;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;7601:13;1802:31441;7702:17;;;:::i;:::-;7744;;;:::i;:::-;7785:20;;;;:::i;:::-;7827:19;;;:::i;:::-;7875:17;;;;:::i;:::-;7961:10;7970:1;7973:10;;;;;;;1802:31441;;;;;;;;;;;;;:::i;7985:3::-;1802:31441;;;;7970:1;1802:31441;;;;;;;;;;;;;;;;;;;;;7985:3;8076:38;8306:49;8076:38;;;;;:::i;:::-;1802:31441;7970:1;8150:26;;1802:31441;8128:48;8150:26;;8128:48;:::i;:::-;1802:31441;7601:13;8211:25;;1802:31441;-1:-1:-1;;;;;1802:31441:3;8190:46;;;;:::i;:::-;1802:31441;;8269:23;;;1802:31441;:::i;:::-;8250:42;;;;:::i;:::-;;;;;;:::i;:::-;-1:-1:-1;8332:23:3;1802:31441;;;8306:49;;:::i;:::-;1802:31441;;;;;7985:3;:::i;:::-;7961:10;;1802:31441;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;:::i;:::-;3789:14;;;;:63;;;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;3921:39;-1:-1:-1;;;;;3921:39:3;;;1802:31441;3921:39;;1802:31441;;3921:39;1802:31441;;;3921:39;;;;;;;;1802:31441;;3921:39;;;1802:31441;;;;;;;;3988:20;3978:30;1802:31441;;4075:14;;1802:31441;4075:14;:::i;:::-;1802:31441;;4075:14;1802:31441;;;;;;;:::i;:::-;;;;;4173:230;;4242:10;;1802:31441;;;4173:230;;1802:31441;;;-1:-1:-1;;;;;4173:230:3;;;1802:31441;;;;;4173:230;;;1802:31441;;;;;;;;4148:8;1802:31441;;;;;;;;;;;;-1:-1:-1;;;;;3988:20:3;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;4419:49;1802:31441;-1:-1:-1;;;;;1802:31441:3;;4173:230;1802:31441;;;;;;;;;;;;;;;;:::i;:::-;4075:14;1802:31441;;;;;;;;;;;4242:10;1802:31441;;;;4419:49;1802:31441;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;3921:39;1802:31441;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;3921:39;1802:31441;;;;;;;;;3921:39;;;;;1802:31441;;;3921:39;;;;;;:::i;:::-;;;;;:::i;:::-;;;;;;;;;;;1802:31441;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;3789:63;1802:31441;;3821:31;-1:-1:-1;;;;;1802:31441:3;;;;;;3821:31;;;;1802:31441;3821:31;;;;;;;;;1802:31441;;3821:31;;;3789:63;3807:45;;;;3789:63;;3821:31;;;;;;;;;;;;;1802:31441;3821:31;;;:::i;:::-;;;1802:31441;;;;;3821:31;;;1802:31441;-1:-1:-1;1802:31441:3;;3821:31;;;-1:-1:-1;3821:31:3;;1802:31441;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;28206:23;1802:31441;;;;;;-1:-1:-1;;;;;28347:24:3;;;1802:31441;;28375:10;28347:38;1802:31441;;;28460:22;1802:31441;;;;;;;;;28698:41;1802:31441;;;;;;;;;;;;;;;28698:41;1802:31441;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;6392:12;1802:31441;6490:17;;;:::i;:::-;6530;;;:::i;:::-;6571:20;;;;:::i;:::-;6621:17;;;:::i;:::-;6659:26;;;:::i;:::-;6713:20;;;;:::i;:::-;6801:10;6810:1;6813:17;;;;;;;1802:31441;;;;;;;;;;;;;;:::i;6832:3::-;1802:31441;;;;6877:8;1802:31441;;;;;;;;;;;;;;;;7152:56;-1:-1:-1;;;;;1802:31441:3;7124:14;6832:3;6902:21;;;;;;;;:::i;:::-;1802:31441;;;;6937:37;;1802:31441;;6937:37;:::i;:::-;1802:31441;6810:1;7009:18;;1802:31441;;;6988:39;;;;:::i;:::-;1802:31441;7068:24;;;1802:31441;7041:51;;;;:::i;:::-;1802:31441;7124:14;1802:31441;7106:32;1802:31441;;;7106:32;1802:31441;;7106:32;:::i;:::-;;:::i;:::-;1802:31441;;;7152:56;;:::i;:::-;1802:31441;6832:3;:::i;:::-;6801:10;;1802:31441;;;;;;;-1:-1:-1;;1802:31441:3;;;;14325:27;1802:31441;14449:17;;;:::i;:::-;14491;;;:::i;:::-;14532:20;;;;:::i;:::-;14569:19;;;:::i;:::-;14617:17;;;;:::i;:::-;14709:10;14718:1;14721:32;;;;;;;1802:31441;;;;;;;;;;;;;:::i;14755:3::-;1802:31441;;;;14821:23;1802:31441;;;;;;;;;;;;;;;;;;;;;14755:3;14861:36;15076:48;14861:36;;;;;:::i;14755:3::-;14709:10;;1802:31441;;;;;;;-1:-1:-1;;1802:31441:3;;;;;3010:39;1802:31441;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;:::i;:::-;-1:-1:-1;;;1802:31441:3;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;13953:75;1802:31441;;;;13561:29;;1802:31441;13561:29;:::i;:::-;1802:31441;13561:29;1802:31441;;;;;;;:::i;:::-;;;;13688:249;1802:31441;13688:249;;1802:31441;;13688:249;;1802:31441;;;;;;:::i;:::-;;13688:249;;1802:31441;;;13688:249;;;1802:31441;;;;13633:23;1802:31441;;;;;;;:::i;:::-;13561:29;1802:31441;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;13953:75;;;1802:31441;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;2808:40;1802:31441;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;2808:40;;1802:31441;2808:40;;1802:31441;;2808:40;;;;;1802:31441;2808:40;;1802:31441;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;2683:45;1802:31441;;;;;;;;;2683:45;;;;;;;;:::i;:::-;1802:31441;;;;2683:45;;;1802:31441;2683:45;1802:31441;2683:45;;;;;:::i;:::-;;1802:31441;2683:45;1802:31441;2683:45;;;;;:::i;:::-;;;;:::i;:::-;1802:31441;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;2542:54;;1802:31441;2542:54;-1:-1:-1;;;;;2542:54:3;;;1802:31441;;2542:54;1802:31441;;2542:54;;;;;:::i;1802:31441::-;;;;;;;-1:-1:-1;;1802:31441:3;;;;;2854:24;1802:31441;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;29185:12;1802:31441;29174:24;;;:::i;:::-;29237:26;;;;:::i;:::-;29308;;;;:::i;:::-;;;29372:24;;;:::i;:::-;;;29446:35;;;:::i;:::-;;;29562:27;;;:::i;:::-;;;1802:31441;;29664:10;29673:1;29676:17;;;;;;;30636:22;;;;;;:::i;:::-;30676:24;;;;:::i;:::-;30725;;;:::i;:::-;30769:22;;;;:::i;:::-;30812:33;;;;:::i;:::-;30905:25;;;;:::i;:::-;1802:31441;;;30958:14;;;;;;1802:31441;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;29673:1;1802:31441;;;;;;;;;;;;30974:3;31002:10;;;;:::i;:::-;1802:31441;30993:19;;;;:::i;:::-;1802:31441;31037:12;;;;:::i;:::-;;31026:23;;;;:::i;:::-;;;;;;:::i;:::-;;31081:19;;;;;:::i;:::-;;31063:37;;;;:::i;:::-;;;;;;:::i;:::-;;31127:14;;;;;:::i;:::-;1802:31441;31114:27;;;;:::i;:::-;1802:31441;31169:15;;;;;:::i;:::-;1802:31441;;;;;;;;31155:29;29673:1;31155:29;;;;;:::i;:::-;;:::i;:::-;-1:-1:-1;;;;;31213:16:3;;;;;:::i;:::-;1802:31441;;31198:31;;;;:::i;:::-;1802:31441;;30946:10;;29695:3;1802:31441;;;;29736:8;1802:31441;;;;;;;29765:10;;;1802:31441;;29765:10;1802:31441;;;;;29673:1;29765:36;:68;;;29695:3;29761:782;;29695:3;;;;;:::i;:::-;29664:10;;29761:782;1802:31441;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;30048:42;-1:-1:-1;;;;;30048:42:3;;1802:31441;30048:42;;1802:31441;;30048:42;1802:31441;;;30048:42;;;;;;;;1802:31441;30516:12;1802:31441;29695:3;1802:31441;;;;;;;;;;;;;;;;;30048:42;;;29761:782;30213:24;;;30411:33;30213:24;;;:::i;:::-;1802:31441;30255:28;;;;:::i;:::-;;;;;;:::i;:::-;;30301:42;;;;;:::i;:::-;;;;;;;:::i;:::-;;30361:32;;;;;:::i;:::-;1802:31441;30411:33;;;;;:::i;:::-;-1:-1:-1;;;;;30462:36:3;;;;;:::i;:::-;1802:31441;;;;30516:12;:::i;:::-;29761:782;;;;30048:42;;;;;;30411:33;30048:42;;30213:24;30048:42;;;;;;1802:31441;;;30048:42;;;;;;:::i;:::-;;-1:-1:-1;30048:42:3;;;;;;;;;29765:68;1802:31441;-1:-1:-1;;;;;1802:31441:3;;-1:-1:-1;;;;;29673:1:3;29805:14;;1802:31441;;29805:28;29765:68;;1802:31441;;;;;;;-1:-1:-1;;1802:31441:3;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;4572:8;1802:31441;;;;;;4610:18;1802:31441;4610:18;;1802:31441;-1:-1:-1;;;;;1802:31441:3;;;4602:74;4610:32;;;4602:74;:::i;:::-;4694:14;;;1802:31441;;;;;4694:14;1802:31441;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;4874:46;-1:-1:-1;;;;;4874:46:3;;1802:31441;4874:46;;1802:31441;;4874:46;1802:31441;;;4874:46;;;;;;;;1802:31441;;;;;;;4874:46;;1802:31441;;-1:-1:-1;;;;;1802:31441:3;4938:10;;;:22;1802:31441;;;;;;;;;5023:30;1802:31441;;;;5198:62;;;;;;;;;;;;;;;;1802:31441;5198:62;;;;;;1802:31441;;;;;;5198:62;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;5173:87;1802:31441;5173:87;;5325:80;5173:87;;;:::i;:::-;1802:31441;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;5325:80;1802:31441;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;4874:46;1802:31441;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;4874:46;1802:31441;;;;;;;;;;;;;;4874:46;;;-1:-1:-1;;;;;4874:46:3;;;;;;;1802:31441;;;4874:46;;;;;;:::i;:::-;;;;;;;;;;;;;;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;32454:17;;;:::i;:::-;32496;;;;:::i;:::-;32531:19;;;:::i;:::-;32567;;;;:::i;:::-;32603;;;;:::i;:::-;1802:31441;;;;;32747:9;;;;;;1802:31441;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;32758:3::-;1802:31441;;;;32781:14;1802:31441;;;;32781:31;1802:31441;;;;;32781:31;:::i;:::-;:43;;1802:31441;32781:59;32777:390;;32758:3;1802:31441;;32735:10;;32777:390;1802:31441;33145:7;1802:31441;;;;;;32781:14;1802:31441;;;;32880:31;1802:31441;;;;;32880:31;:::i;:::-;-1:-1:-1;1802:31441:3;;32929:20;1802:31441;;32929:20;:::i;:::-;1802:31441;32989:16;;;1802:31441;32967:38;;;;:::i;:::-;1802:31441;;33038:9;;;1802:31441;:::i;:::-;33023:24;;;;:::i;:::-;;;;;;:::i;:::-;;33079:8;33065:22;33079:8;1802:31441;32781:14;33079:8;;1802:31441;:::i;:::-;33065:22;;:::i;:::-;;;;;;:::i;:::-;;33119:8;1802:31441;:::i;:::-;33105:22;;;;:::i;:::-;;;;;;:::i;:::-;;33145:7;:::i;:::-;32777:390;;;;;1802:31441;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;27320:23;1802:31441;;;;;;27380:22;1802:31441;27380:22;;1802:31441;;;;;;;;;27976:57;1802:31441;;;;;;;;;;-1:-1:-1;;;;;27566:24:3;1802:31441;27509:25;;1802:31441;27566:24;;1802:31441;;27601:15;27566:24;1802:31441;27601:15;:::i;:::-;1802:31441;;27566:24;1802:31441;;;;;;;:::i;:::-;;;;;27767:193;;1802:31441;;27767:193;;1802:31441;;;;;;:::i;:::-;27767:193;;;1802:31441;;;27767:193;;;1802:31441;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;:::i;:::-;27976:57;;;1802:31441;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;5501:8;1802:31441;;;;;;5623:14;1802:31441;5539:18;;1802:31441;5531:74;-1:-1:-1;;;;;1802:31441:3;;;5539:32;;5531:74;:::i;:::-;5623:14;1802:31441;;;;;5623:14;1802:31441;;;;;;;;;-1:-1:-1;;1802:31441:3;5720:22;1802:31441;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;5757:47;;;1802:31441;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;16565:23;1802:31441;;;;;;;;;16625:22;;;1802:31441;;;;;;;;;16763:25;;;;1802:31441;;-1:-1:-1;;;;;1802:31441:3;;;;;;;17180:39;1802:31441;17180:39;;;1802:31441;17180:39;;1802:31441;;17180:39;1802:31441;;;17180:39;;;;;;;;1802:31441;;;;;;;;;;;;;;;;;;17180:39;;1802:31441;-1:-1:-1;1802:31441:3;;;;;17670:3;1802:31441;;17654:14;;;;;17693:6;;;;;:::i;:::-;1802:31441;17693:21;17689:420;;16763:25;1802:31441;17642:10;;17689:420;17734:21;;18053:18;17734:21;;;;;;;;;;17943:14;17734:21;;;;;17891:12;17734:21;17996:14;17734:21;17838:15;17734:21;16763:25;17789:8;;;;;;:::i;:::-;-1:-1:-1;17838:15:3;:::i;17943:14::-;1802:31441;17996:14;;:::i;18053:18::-;-1:-1:-1;17637:482:3;1802:31441;;;16763:25;1802:31441;;;;;;;18305:24;;;;1802:31441;-1:-1:-1;;;;;1802:31441:3;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;18431:48;;;1802:31441;18431:48;;1802:31441;;18431:48;17180:39;18431:48;;;;;;;;;1802:31441;;18431:48;;;17637:482;1802:31441;;18572:1;1802:31441;18572:1;1802:31441;;;;;;18598:3;1802:31441;;;;;;;;;18682:3;18538:64;18670:15;18666:61;;17637:482;18786:59;;;;;1802:31441;;18786:59;1802:31441;18786:59;;1802:31441;18786:59;;1802:31441;17180:39;1802:31441;;;;18786:59;1802:31441;;;;;;18786:59;;;;;;;;-1:-1:-1;;;;;18786:59:3;18857:60;18786:59;;;17637:482;18857:60;;:::i;:::-;1802:31441;18857:105;;;;;1802:31441;;18857:105;1802:31441;18857:105;;1802:31441;18857:105;;1802:31441;;17180:39;1802:31441;;;;;;18857:105;;;;;;;;;17637:482;1802:31441;16763:25;-1:-1:-1;;;;;16763:25:3;;;;1802:31441;;;;19086:15;18305:24;1802:31441;19086:15;:::i;:::-;1802:31441;;18305:24;1802:31441;;;;;;;:::i;:::-;;;;;19144:187;;1802:31441;;19144:187;;1802:31441;-1:-1:-1;;1802:31441:3;;;-1:-1:-1;;;1802:31441:3;;;;;;;:::i;:::-;;;;;19144:187;;;1802:31441;16763:25;19144:187;;;1802:31441;;;;16763:25;1802:31441;;;;;;;:::i;:::-;;;;;18857:105;1802:31441;;18857:105;;;:::i;:::-;1802:31441;;;;18857:105;;;18786:59;1802:31441;;18786:59;;;:::i;:::-;;;;18666:61;18701:15;18682:3;18666:61;;18431:48;;;1802:31441;18431:48;;1802:31441;18431:48;;;;;;1802:31441;18431:48;;;:::i;:::-;;;1802:31441;;;;;18431:48;;;;;;-1:-1:-1;18431:48:3;;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;17180:39;1802:31441;;;;;;;;;17654:14;;;;;;;;;;;;;;;;17180:39;;;;;;;;;;1802:31441;;;17180:39;;;;;;:::i;:::-;1802:31441;17180:39;;;;1802:31441;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;17180:39;;;;1802:31441;;;;:::i;:::-;;;;;;;;;;;;;;;17180:39;;;1802:31441;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;17180:39;;;1802:31441;;;;;;;;;;;;;;;;;;;;;;;;;;;;;17180:39;;;1802:31441;;;:::i;:::-;17180:39;;;;;;;;;;;;1802:31441;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;11819:12;1802:31441;;;;;;-1:-1:-1;;;;;1802:31441:3;11811:1;11814:17;;;;;;;12189;;;;:::i;:::-;12233;;;;:::i;:::-;12278:20;;;;:::i;:::-;12332:17;;;:::i;:::-;12374:26;12432:20;12374:26;;;:::i;:::-;12432:20;;:::i;:::-;1802:31441;;;12566:10;11811:1;12578:17;;;;;;;1802:31441;;;;;;;;;;;;;;;:::i;12597:3::-;1802:31441;;;;11873:8;1802:31441;;;;;;;;;12707:38;-1:-1:-1;;;;;12707:38:3;;1802:31441;12707:38;;1802:31441;;;12707:38;11943;12707;;;;;;;;;1802:31441;;;;;;12707:38;;;12597:3;-1:-1:-1;;;;;;1802:31441:3;12015:10;12767:22;12763:503;;12597:3;;;;;;:::i;:::-;12566:10;;12763:503;1802:31441;-1:-1:-1;;;;;1802:31441:3;13126:14;13240:7;1802:31441;;;12597:3;1802:31441;;;;11873:8;1802:31441;;;12872:21;1802:31441;;;;;12872:21;;:::i;:::-;1802:31441;12915:37;1802:31441;;;12915:37;;:::i;:::-;1802:31441;12995:18;11811:1;12995:18;;1802:31441;;12974:39;;;;:::i;:::-;1802:31441;13062:24;;;1802:31441;13035:51;;;;:::i;:::-;1802:31441;13126:14;1802:31441;13108:32;1802:31441;;;13108:32;1802:31441;;13108:32;:::i;:::-;1802:31441;;13162:56;;;;:::i;13240:7::-;12763:503;;;;;;;12707:38;;;;;1802:31441;;;12707:38;;;;;;:::i;:::-;;;;;;;;;;11833:3;1802:31441;;;;11873:8;1802:31441;;;;;;;;;11943:38;-1:-1:-1;;;;;11943:38:3;;1802:31441;11943:38;;1802:31441;;;11943:38;;;;;;;;;;;1802:31441;;11943:38;;;11833:3;-1:-1:-1;;;;;;1802:31441:3;12015:10;12003:22;11999:76;;11833:3;;;;:::i;:::-;11802:10;;11999:76;12049:7;;11833:3;12049:7;;:::i;:::-;11999:76;;;;;11943:38;;;;;1802:31441;;;11943:38;;;;;;:::i;:::-;;;;;;;;;;1802:31441;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;:::o;:::-;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;-1:-1:-1;;;;;;1802:31441:3;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::o;:::-;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;;1802:31441:3;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;-1:-1:-1;;1802:31441:3;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;-1:-1:-1;;;;;;1802:31441:3;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;-1:-1:-1;1802:31441:3;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;:::o;:::-;;;-1:-1:-1;1802:31441:3;;;;;-1:-1:-1;1802:31441:3;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;:::o;:::-;;;;;;;;-1:-1:-1;1802:31441:3;;;-1:-1:-1;1802:31441:3;;;;;-1:-1:-1;1802:31441:3;:::o;:::-;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;:::o;:::-;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;:::i;:::-;-1:-1:-1;;1802:31441:3;;;;;;;:::o;:::-;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;:::o;:::-;;;;;;;;;;;;:::o;:::-;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;-1:-1:-1;1802:31441:3;;;;;;;;;;;-1:-1:-1;1802:31441:3;;-1:-1:-1;1802:31441:3;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;-1:-1:-1;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;:::o;:::-;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1802:31441:3;;;;;;;;-1:-1:-1;;1802:31441:3;;;;:::o;:::-;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;-1:-1:-1;1802:31441:3;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;:::o;:::-;;;;;;;;:::o;15229:1137::-;1802:31441;;15464:23;1802:31441;;;;;;;;15568:21;1802:31441;;15752:12;1802:31441;;;15748:16;;;;;;16300:59;1802:31441;;-1:-1:-1;;;;;16300:59:3;;1802:31441;16300:59;;;1802:31441;;;;;;;;;;;;;;;;16300:59;15766:3;1802:31441;;;15811:8;1802:31441;;;;;;;;15959:31;:81;;;15766:3;15959:125;;;15766:3;15955:251;;15766:3;1802:31441;;15736:10;;15955:251;16111:22;;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;16104:29;-1:-1:-1;;;;16104:29:3:o;15959:125::-;16044:14;1802:31441;16044:14;;;1802:31441;;16044:14;1802:31441;;;;;;16044:40;15959:125;;:81;15994:18;-1:-1:-1;;;;;1802:31441:3;15994:18;;1802:31441;;-1:-1:-1;;;;;16016:24:3;;;1802:31441;;15994:46;15959:81;;1802:31441;;;;-1:-1:-1;;;;;1802:31441:3;;;;;;;;;;;;;;;;;",
+  "sourceMap": "83:1717:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;:::i;:::-;-1:-1:-1;83:1717:3;;-1:-1:-1;;;;;83:1717:3;;;-1:-1:-1;;;;;;83:1717:3;;;;;;;-1:-1:-1;83:1717:3;;;;;;;;;;;333:9;83:1717;;;;;;;;;;;;-1:-1:-1;83:1717:3;;;;-1:-1:-1;83:1717:3;;;;;-1:-1:-1;83:1717:3;;;;-1:-1:-1;;;;;83:1717:3;;;;;;:::o",
+  "deployedSourceMap": "83:1717:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;1492:6;83:1717;;;1492:10;;83:1717;;;;;;;;;;;;1603:3;83:1717;;1624:26;;;83:1717;;;;;;;-1:-1:-1;;;;;83:1717:3;;;1706:46;;;;;83:1717;1706:46;;;;83:1717;1706:46;83:1717;;;;;;;;;1706:46;;;;;83:1717;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;1603:3;83:1717;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;;-1:-1:-1;;;;;136:23:3;83:1717;;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;;165:18;83:1717;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;463:70;-1:-1:-1;;;;;485:8:3;83:1717;;471:10;:22;463:70;:::i;:::-;83:1717;;;;551:6;83:1717;551:10;;543:42;551:10;;543:42;:::i;:::-;-1:-1:-1;;;;;83:1717:3;;;595:36;;;;;83:1717;595:36;;;;83:1717;551:6;83:1717;;595:36;;;;;83:1717;;;;;;-1:-1:-1;;83:1717:3;;;;-1:-1:-1;;;;;83:1717:3;;;742:10;;:24;83:1717;;829:6;83:1717;829:10;;;83:1717;;;872:36;;;;;;;;;;83:1717;829:6;83:1717;;;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;83:1717:3;;;;;;1042:70;-1:-1:-1;;;;;83:1717:3;;;1050:10;:22;1042:70;:::i;:::-;1130:6;83:1717;1122:42;1130:10;;;1122:42;:::i;:::-;1182:24;;83:1717;;;;;;;-1:-1:-1;;;;;83:1717:3;;;1259:44;;;;;83:1717;1259:44;;;;1130:6;83:1717;;;;;;;;;1130:6;83:1717;;1259:44;;;;;83:1717;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;-1:-1:-1;;;;;83:1717:3;;;;;;;;;;;;;;;;;",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"./Projects.sol\";\n\ncontract Escrow {\n    address public freelancer;\n    address public employer;\n    uint public amount;\n\n    constructor(address _freelancer, address _employer) payable {\n        freelancer = _freelancer;\n        employer = _employer;\n        amount = msg.value; // Set the amount to the value sent during the contract creation\n    }\n\n    function releaseFunds() external {\n        require(msg.sender == employer, \"Only the employer can release funds\");\n        require(amount > 0, \"No funds to release\");\n        payable(freelancer).transfer(amount);\n        amount = 0; // Set amount to 0 after release\n    }\n\n    function refund() external {\n        require(msg.sender == freelancer, \"Only the freelancer can request a refund\");\n        require(amount > 0, \"No funds to refund\");\n        payable(freelancer).transfer(amount);\n        amount = 0; // Set amount to 0 after refund\n    }\n\n    function releaseReducedFunds(uint _reducedAmount) external {\n        require(msg.sender == employer, \"Only the employer can release funds\");\n        require(amount > 0, \"No funds to release\");\n        require(_reducedAmount <= amount, \"Reduced amount exceeds escrow balance\");\n\n        payable(freelancer).transfer(_reducedAmount);\n        amount -= _reducedAmount; // Deduct the paid amount from the total escrow balance\n    }\n\n    function releaseMilestonePayment(uint milestonePercentage) external {\n        require(amount > 0, \"Insufficient funds in escrow\");\n\n        uint milestonePayment = (amount * milestonePercentage) / 100;\n        require(milestonePayment <= amount, \"Milestone payment exceeds escrow balance\");\n\n        payable(freelancer).transfer(milestonePayment);\n        // amount -= milestonePayment;\n    }\n}\n\ncontract RequestManager {\n    Projects public projectsContract;\n\n    enum RequestStatus { Pending, Accepted, Rejected }\n\n    struct Request {\n        uint projectId;\n        address freelancer;\n        uint freelancerRating;\n        RequestStatus status;\n        Escrow escrowContract;\n    }\n\n    struct MilestoneReviewRequest {\n        uint id;\n        uint milestoneId;\n        address freelancer;\n        string cid;\n        bool reviewed;\n    }\n\n    struct File {\n        uint id;\n        uint milestoneId;\n        string name;\n        string rid;\n        string cid;\n    }\n\n    struct ReviewResponse{\n        uint id;\n        uint milestoneId;\n        address freelancer;\n        string response;\n        bool accepted;\n    }\n    \n    mapping(uint => ReviewResponse) public reviewResponses;\n    uint public responseCount;\n\n    // Mapping milestone ID to an array of files\n    mapping(uint => File[]) public milestoneFiles;\n    uint public fileCount;\n\n    // Store all requests in a single mapping\n    mapping(uint => Request) public requests;\n    uint public requestCount; // To keep track of the total number of requests\n\n    mapping(uint => MilestoneReviewRequest) public milestoneReviewRequests;\n    uint public milestoneReviewRequestCount;\n\n    event RequestSent(uint requestId, uint projectId, address freelancer);\n    event RequestAccepted(uint requestId, address freelancer, address escrowContract);\n    event RequestRejected(uint requestId, address freelancer);\n    event MilestoneReviewRequestSent(uint requestId, uint milestoneId, string cid);\n    event MilestoneAccepted(uint projectId, uint milestoneId, uint updatedRating);\n    event MilestoneReviewRequestRejected(uint indexed reviewRequestId, string reason);\n    event RejectionReasonAccepted(uint _reviewRequestId);\n\n    constructor(address _projectsContract) {\n        projectsContract = Projects(_projectsContract);\n    }\n\n    function sendRequest(uint _projectId, uint _freelancerRating) public {\n        require(_projectId > 0 && _projectId <= projectsContract.projectCount(), \"Invalid project ID\");\n        (,, , , Projects.Status status, ) = projectsContract.getProject(_projectId);\n        require(status == Projects.Status.Open, \"Project is not open\");\n\n        // Create a new request\n        requestCount++; // Increment request count to create a unique ID\n        requests[requestCount] = Request({\n            projectId: _projectId,\n            freelancer: msg.sender,\n            freelancerRating: _freelancerRating,\n            status: RequestStatus.Pending,\n            escrowContract: Escrow(address(0))\n        });\n\n        emit RequestSent(requestCount, _projectId, msg.sender);\n    }\n\n    function acceptRequest(uint _requestId) public payable {\n        Request storage request = requests[_requestId];\n        require(request.freelancer != address(0), \"No request exists for this ID\");\n        require(request.status == RequestStatus.Pending, \"Request is not pending\");\n\n        // Fetch project details\n        (,, , uint projectReward, Projects.Status status, address employer) = projectsContract.getProject(request.projectId);\n        require(msg.sender == employer, \"Only the employer can accept the request\");\n        require(status == Projects.Status.Open, \"Project must be open\");\n\n        // Create new escrow contract instance with freelancer and employer details\n        request.escrowContract = new Escrow{value: projectReward}(request.freelancer, employer);\n\n        request.status = RequestStatus.Accepted;\n        emit RequestAccepted(_requestId, request.freelancer, address(request.escrowContract));\n    }\n\n    function rejectRequest(uint _requestId) public {\n        Request storage request = requests[_requestId];\n        require(request.freelancer != address(0), \"No request exists for this ID\");\n        require(request.status == RequestStatus.Pending, \"Request already processed\");\n\n        request.status = RequestStatus.Rejected;\n        emit RequestRejected(_requestId, request.freelancer);\n    }\n\n    \n\n    function getRequest(uint _requestId) public view returns (Request memory) {\n        require(requests[_requestId].freelancer != address(0), \"No request exists for this ID\");\n        return requests[_requestId];\n    }\n\n    // New function to view all requests\n    function viewAllRequests() public view returns (\n        uint[] memory requestIds,\n        uint[] memory projectIds,\n        address[] memory freelancers,\n        uint[] memory freelancerRatings,\n        RequestStatus[] memory statuses,\n        address[] memory escrowContracts\n    ) {\n        uint count = requestCount;\n\n        // Initialize arrays based on the total request count\n        requestIds = new uint[](count);\n        projectIds = new uint[](count);\n        freelancers = new address[](count);\n        freelancerRatings = new uint[](count);\n        statuses = new RequestStatus[](count);\n        escrowContracts = new address[](count);\n\n        // Populate the arrays with request details\n        for (uint i = 1; i <= requestCount; i++) {\n            Request storage request = requests[i];\n            requestIds[i - 1] = i;\n            projectIds[i - 1] = request.projectId;\n            freelancers[i - 1] = request.freelancer;\n            freelancerRatings[i - 1] = request.freelancerRating;\n            statuses[i - 1] = request.status;\n            escrowContracts[i - 1] = address(request.escrowContract);\n        }\n\n        return (requestIds, projectIds, freelancers, freelancerRatings, statuses, escrowContracts);\n    }\n\n\n    function viewAllReviewResponses() public view returns (\n        uint[] memory responseIds,\n        uint[] memory milestoneIds,\n        address[] memory freelancers,\n        string[] memory responses,\n        bool[] memory acceptedStatuses\n    ) {\n        uint count = responseCount;\n\n        // Initialize arrays based on the total response count\n        responseIds = new uint[](count);\n        milestoneIds = new uint[](count);\n        freelancers = new address[](count);\n        responses = new string[](count);\n        acceptedStatuses = new bool[](count);\n\n        // Populate the arrays with response details\n        for (uint i = 1; i <= count; i++) {\n            ReviewResponse storage reviewResponse = reviewResponses[i];\n            responseIds[i - 1] = reviewResponse.id;\n            milestoneIds[i - 1] = reviewResponse.milestoneId;\n            freelancers[i - 1] = reviewResponse.freelancer;\n            responses[i - 1] = reviewResponse.response;\n            acceptedStatuses[i - 1] = reviewResponse.accepted;\n        }\n\n        return (responseIds, milestoneIds, freelancers, responses, acceptedStatuses);\n    }\n\n\n    // function acceptMilestone(uint _milestoneId, uint _actualDaysTaken, uint _delayPenalty, uint _requestId) public payable {\n    //     Request memory request = getRequest(_requestId); // Retrieve the request using requestId\n\n    //     // Ensure projectId is valid\n    //     require(request.projectId > 0 && request.projectId <= projectsContract.projectCount(), \"Project does not exist\");\n\n    //     // Retrieve the project details using the getProject function\n    //     (, , , uint reward, , address employer) = projectsContract.getProject(request.projectId);\n    //     require(msg.sender == employer, \"Only the employer can accept milestones\");\n\n    //     // Ensure milestoneId is valid\n    //     (\n    //         uint[] memory ids,\n    //         uint[] memory projectIds,\n    //         string[] memory names,\n    //         string[] memory descriptions,\n    //         uint[] memory daycounts,\n    //         uint[] memory percentages,\n    //         bool[] memory completions,\n    //         string[] memory proofFileHashes\n    //     ) = projectsContract.getMilestones(request.projectId);\n\n    //     // Check if the milestone exists and is within bounds\n    //     require(_milestoneId > 0 && _milestoneId <= ids.length, \"Milestone does not exist\");\n        \n    //     // Fetch milestone data by using _milestoneId as an index\n    //     uint milestoneIndex = _milestoneId - 1;\n    //     require(!completions[milestoneIndex], \"Milestone already completed\");\n    //     require(bytes(proofFileHashes[milestoneIndex]).length > 0, \"Proof file not uploaded\");\n\n    //     // Mark the milestone as completed\n    //     projectsContract.completeMilestone(request.projectId, _milestoneId);\n\n    //     // Calculate and update freelancer rating based on the provided formula\n    //     uint currentRating = projectsContract.getFreelancerRating(request.freelancer);\n    //     uint rewardWeight = (percentages[milestoneIndex] * reward) / 100;\n    //     int ratingChange = int((5 * 100 * rewardWeight * daycounts[milestoneIndex]) / (reward * _actualDaysTaken));\n\n    //     // Cap the increment at +0.2 if positive\n    //     if (ratingChange > 20) {\n    //         ratingChange = 20;\n    //     }\n\n    //     uint newRating = uint(int(currentRating) + ratingChange);\n\n    //     // Ensure new rating doesn't exceed 5.0 (500 basis points)\n    //     if (newRating > 500) {\n    //         newRating = 500;\n    //     }\n\n    //     // Update the freelancer's rating\n    //     projectsContract.setFreelancerRating(request.freelancer, newRating);\n\n    //     // Release milestone payment from the escrow with the specified penalty\n    //     uint milestonePercentage = percentages[milestoneIndex];\n    //     request.escrowContract.releaseMilestonePayment(milestonePercentage, _delayPenalty);\n\n    //     emit MilestoneAccepted(request.projectId, _milestoneId, newRating);\n    // }\n\n\n    function viewRequestsByEmployer() public view returns (\n            uint[] memory requestIds,\n            uint[] memory projectIds,\n            address[] memory freelancers,\n            uint[] memory freelancerRatings,\n            RequestStatus[] memory statuses,\n            address[] memory escrowContracts\n        ) {\n            uint count = 0;\n\n            // Count requests that belong to projects owned by the employer\n            for (uint i = 1; i <= requestCount; i++) {\n                uint projectId = requests[i].projectId;\n                (, , , , , address employer) = projectsContract.getProject(projectId);\n                if (employer == msg.sender) {\n                    count++;\n                }\n            }\n\n            // Initialize arrays based on the count of matching requests\n            requestIds = new uint[](count);\n            projectIds = new uint[](count);\n            freelancers = new address[](count);\n            freelancerRatings = new uint[](count);\n            statuses = new RequestStatus[](count);\n            escrowContracts = new address[](count);\n\n            uint index = 0;\n\n            // Populate the arrays with matching request details\n            for (uint i = 1; i <= requestCount; i++) {\n                uint projectId = requests[i].projectId;\n                (, , , , , address employer) = projectsContract.getProject(projectId);\n                if (employer == msg.sender) {\n                    Request storage request = requests[i];\n                    requestIds[index] = i;\n                    projectIds[index] = request.projectId;\n                    freelancers[index] = request.freelancer;\n                    freelancerRatings[index] = request.freelancerRating;\n                    statuses[index] = request.status;\n                    escrowContracts[index] = address(request.escrowContract);\n                    index++;\n                }\n            }\n\n            return (requestIds, projectIds, freelancers, freelancerRatings, statuses, escrowContracts);\n    }\n\n    function sendMilestoneReviewRequest(uint _milestoneId, string calldata _cid, address _freelancer) public {\n        // Create a new milestone review request\n        milestoneReviewRequestCount++; // Increment count for unique ID\n        milestoneReviewRequests[milestoneReviewRequestCount] = MilestoneReviewRequest({\n            id: milestoneReviewRequestCount,\n            milestoneId: _milestoneId,\n            freelancer: _freelancer,\n            cid: _cid,\n            reviewed: false // Initially, the request is not reviewed\n        });\n\n        emit MilestoneReviewRequestSent(milestoneReviewRequestCount, _milestoneId, _cid); // Emit event\n    }\n\n    function viewAllMilestoneReviewRequests() public view returns (\n        uint[] memory requestIds,\n        uint[] memory milestoneIds,\n        address[] memory freelancers,\n        string[] memory cids,\n        bool[] memory reviewedStatuses\n    ) {\n        uint count = milestoneReviewRequestCount;\n\n        // Initialize arrays based on the total count of review requests\n        requestIds = new uint[](count);\n        milestoneIds = new uint[](count);\n        freelancers = new address[](count);\n        cids = new string[](count);\n        reviewedStatuses = new bool[](count);\n\n        // Populate the arrays with review request details\n        for (uint i = 1; i <= milestoneReviewRequestCount; i++) {\n            MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[i];\n            requestIds[i - 1] = reviewRequest.id;\n            milestoneIds[i - 1] = reviewRequest.milestoneId;\n            freelancers[i - 1] = reviewRequest.freelancer;\n            cids[i - 1] = reviewRequest.cid;\n            reviewedStatuses[i - 1] = reviewRequest.reviewed;\n        }\n\n        return (requestIds, milestoneIds, freelancers, cids, reviewedStatuses);\n    }\n\n\n    function getEscrowAccountFromReviewRequest(uint _reviewRequestId, uint _projectId) public view returns (Escrow) {\n        // Fetch the MilestoneReviewRequest using the provided ID\n        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n\n        // Ensure the review request exists\n        require(reviewRequest.id != 0, \"Review request does not exist\");\n        \n        // Find the corresponding request based on the project ID and freelancer address\n        for (uint i = 0; i < requestCount; i++) {\n            Request storage request = requests[i];\n\n            // Check if the request matches the provided projectId and the freelancer address from the review request\n            if (request.projectId == _projectId && request.freelancer == reviewRequest.freelancer && request.status == RequestStatus.Accepted) {\n                return request.escrowContract; // Return the escrow contract associated with the request\n            }\n        }\n\n        // If no matching request was found, revert with an error message\n        revert(\"No matching request found for this review request\");\n    }\n\n\n\n\n    function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {\n        // Fetch the  request using the ID\n        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n        require(!reviewRequest.reviewed, \"Review request already accepted\");\n\n        // Get the milestone ID from the  request\n        uint milestoneId = reviewRequest.milestoneId;\n\n        // Retrieve the associated milestones for the project\n        (\n            uint[] memory ids,\n            uint[] memory projectIds,\n            string[] memory names,\n            string[] memory descriptions,\n            uint[] memory daycounts,\n            uint[] memory percentages,\n            bool[] memory completions,\n            string[] memory proofFileHashes\n        ) = projectsContract.getMilestones(_projId);\n\n        // Initialize variables to store the milestone data once we find it\n        bool milestoneFound = false;\n        string memory milestoneName;\n        string memory milestoneDescription;\n        uint milestoneDaycount;\n        uint milestonePercentage;\n        bool milestoneCompleted;\n        string memory milestoneProofFileHash;\n\n        // Search for the milestone with the specified milestoneId\n        for (uint i = 0; i < ids.length; i++) {\n            if (ids[i] == milestoneId) {\n                milestoneFound = true;\n                milestoneName = names[i];\n                milestoneDescription = descriptions[i];\n                milestoneDaycount = daycounts[i];\n                milestonePercentage = percentages[i];\n                milestoneCompleted = completions[i];\n                milestoneProofFileHash = proofFileHashes[i];\n                break;\n            }\n        }\n\n        require(milestoneFound, \"Milestone does not exist\");\n\n        reviewRequest.reviewed = true;\n\n        // Get freelancer's address from the request\n        address freelancer = reviewRequest.freelancer;\n\n        // Update freelancer rating based on the milestone percentage\n        uint currentRating = projectsContract.getFreelancerRating(freelancer);\n        // uint rewardWeight = projReward / 100;\n        uint newRating = currentRating + (5 * milestonePercentage / 100);\n\n        // Ensure the new rating does not exceed 500\n        if (newRating > 500) {\n            newRating = 500;\n        }\n\n        // Set the new rating for the freelancer\n        projectsContract.setFreelancerRating(freelancer, newRating);\n\n\n        getEscrowAccountFromReviewRequest(_reviewRequestId, _projId).releaseMilestonePayment(milestonePercentage);\n\n\n        uint _milestoneId = reviewRequest.milestoneId;\n        address _freelancer = reviewRequest.freelancer;\n\n        responseCount++;\n        reviewResponses[responseCount] = ReviewResponse({\n            id: responseCount,\n            milestoneId: _milestoneId,\n            freelancer: _freelancer,\n            response: \"\",\n            accepted: true\n        });\n    }\n\n\n\n    // function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {\n    //     // Fetch the  request using the ID\n    //     MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n    //     require(!reviewRequest.reviewed, \"Review request already accepted\");\n\n    //     // Get the milestone ID from the  request\n    //     uint milestoneId = reviewRequest.milestoneId;\n\n    //     // Retrieve the associated milestones for the project\n    //     (\n    //         uint[] memory ids,\n    //         uint[] memory projectIds,\n    //         string[] memory names,\n    //         string[] memory descriptions,\n    //         uint[] memory daycounts,\n    //         uint[] memory percentages,\n    //         bool[] memory completions,\n    //         string[] memory proofFileHashes\n    //     ) = projectsContract.getMilestones(_projId);\n\n    //     // Initialize variables to store the milestone data once we find it\n    //     bool milestoneFound = false;\n    //     string memory milestoneName;\n    //     string memory milestoneDescription;\n    //     uint milestoneDaycount;\n    //     uint milestonePercentage;\n    //     bool milestoneCompleted;\n    //     string memory milestoneProofFileHash;\n\n    //     // Search for the milestone with the specified milestoneId\n    //     for (uint i = 0; i < ids.length; i++) {\n    //         if (ids[i] == milestoneId) {\n    //             milestoneFound = true;\n    //             milestoneName = names[i];\n    //             milestoneDescription = descriptions[i];\n    //             milestoneDaycount = daycounts[i];\n    //             milestonePercentage = percentages[i];\n    //             milestoneCompleted = completions[i];\n    //             milestoneProofFileHash = proofFileHashes[i];\n    //             break;\n    //         }\n    //     }\n\n    //     require(milestoneFound, \"Milestone does not exist\");\n\n    //     // Use getProject to retrieve the project details\n    //     (\n    //         uint projId,\n    //         string memory projName,\n    //         string memory projDescription,\n    //         uint projReward,\n    //         Projects.Status projStatus,\n    //         address projEmployer\n    //     ) = projectsContract.getProject(_projId);\n\n    //     // Verify that the sender is the employer of the project\n    //     require(projEmployer == msg.sender, \"Only the employer can accept milestones\");\n\n    //     // Mark the review request as accepted\n    //     reviewRequest.reviewed = true;\n\n    //     // Get freelancer's address from the request\n    //     address freelancer = reviewRequest.freelancer;\n\n    //     // Update freelancer rating based on the milestone percentage\n    //     uint currentRating = projectsContract.getFreelancerRating(freelancer);\n    //     uint rewardWeight = projReward / 100;\n    //     uint newRating = currentRating + (5 * milestonePercentage / rewardWeight);\n\n    //     // Ensure the new rating does not exceed 500\n    //     if (newRating > 500) {\n    //         newRating = 500;\n    //     }\n\n    //     // Set the new rating for the freelancer\n    //     projectsContract.setFreelancerRating(freelancer, newRating);\n\n    //     // Find the request with the matching projectId and freelancer\n    //     uint requestIndex;\n    //     bool foundRequest = false;\n\n    //     for (uint i = 0; i < requestCount; i++) {\n    //         if (requests[i].projectId == _projId && requests[i].freelancer == freelancer && requests[i].status == RequestStatus.Accepted) {\n    //             requestIndex = i;\n    //             foundRequest = true;\n    //             break;\n    //         }\n    //     }\n    //     require(foundRequest, \"Associated request not found\");\n\n    //     // Release the milestone payment from escrow using the found request\n    //     requests[requestIndex].escrowContract.releaseMilestonePayment(milestonePercentage);\n\n    //     // Emit an event to record the milestone acceptance\n    //     emit MilestoneAccepted(projId, milestoneId, newRating);\n    // }\n\n    // function acceptMilestoneReviewRequest(uint _reviewRequestId, uint _projId) public payable {\n    //     // Fetch the request using the ID\n    //     MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n    //     require(reviewRequest.id != 0, \"Review request does not exist\");\n    //     require(!reviewRequest.reviewed, \"Review request already accepted\");\n\n    //     // Get the milestone ID from the request\n    //     uint milestoneId = reviewRequest.milestoneId;\n\n    //     // Retrieve the associated milestones for the project\n    //     (\n    //         uint[] memory ids,\n    //         ,  // projectIds not used\n    //         ,  // names not used\n    //         ,  // descriptions not used\n    //         uint[] memory daycounts,\n    //         uint[] memory percentages,\n    //         bool[] memory completions,\n    //         string[] memory proofFileHashes\n    //     ) = projectsContract.getMilestones(_projId);\n\n    //     // Verify that the milestone exists and get its index\n    //     uint milestoneIndex;\n    //     bool milestoneFound = false;\n    //     for (uint i = 0; i < ids.length; i++) {\n    //         if (ids[i] == milestoneId) {\n    //             milestoneIndex = i;\n    //             milestoneFound = true;\n    //             break;\n    //         }\n    //     }\n    //     require(milestoneFound, \"Milestone does not exist\");\n    //     require(!completions[milestoneIndex], \"Milestone already completed\");\n    //     require(bytes(proofFileHashes[milestoneIndex]).length > 0, \"Proof file not uploaded\");\n\n    //     // Get project details\n    //     (, , , uint projReward, , address projEmployer) = projectsContract.getProject(_projId);\n    //     require(msg.sender == projEmployer, \"Only the employer can accept milestones\");\n\n    //     // Mark the milestone as completed in the Projects contract\n    //     projectsContract.completeMilestone(_projId, milestoneId);\n\n    //     // Mark the review request as accepted\n    //     reviewRequest.reviewed = true;\n\n    //     // Get freelancer's address from the request\n    //     address freelancer = reviewRequest.freelancer;\n\n    //     // Update freelancer rating\n    //     uint currentRating = projectsContract.getFreelancerRating(freelancer);\n    //     uint milestonePercentage = percentages[milestoneIndex];\n        \n    //     // Calculate rating increase based on milestone percentage and project reward\n    //     uint ratingIncrease = (5 * milestonePercentage * daycounts[milestoneIndex]) / 100;\n    //     uint newRating = currentRating + ratingIncrease;\n        \n    //     // Cap the rating at 500 (5.0)\n    //     if (newRating > 500) {\n    //         newRating = 500;\n    //     }\n\n    //     // Update the freelancer's rating\n    //     projectsContract.setFreelancerRating(freelancer, newRating);\n\n    //     // Find the associated request for the escrow\n    //     uint requestId;\n    //     bool foundRequest = false;\n    //     for (uint i = 1; i <= requestCount; i++) {\n    //         if (requests[i].projectId == _projId && \n    //             requests[i].freelancer == freelancer && \n    //             requests[i].status == RequestStatus.Accepted) {\n    //             requestId = i;\n    //             foundRequest = true;\n    //             break;\n    //         }\n    //     }\n    //     require(foundRequest, \"Associated request not found\");\n    //     require(address(requests[requestId].escrowContract) != address(0), \"Escrow contract not found\");\n\n    //     // Release the milestone payment from escrow\n    //     requests[requestId].escrowContract.releaseMilestonePayment(milestonePercentage);\n\n    //     // Emit event\n    //     emit MilestoneAccepted(_projId, milestoneId, newRating);\n    // }\n\n\n\n\n    function rejectMilestoneReviewRequest(uint _reviewRequestId, string calldata _reason)  public {\n        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n        require(!reviewRequest.reviewed, \"Review request already processed\");\n        reviewRequest.reviewed = true;\n\n        uint _milestoneId = reviewRequest.milestoneId;\n        address _freelancer = reviewRequest.freelancer;\n\n        responseCount++;\n        // request.escrowContract = new ReviewResponse{value: projectReward}(request.freelancer, employer);\n        reviewResponses[responseCount] = ReviewResponse({\n            id: responseCount,\n            milestoneId: _milestoneId,\n            freelancer: _freelancer,\n            response: _reason,\n            accepted: false\n        });\n\n        emit MilestoneReviewRequestRejected(_reviewRequestId, _reason);\n    }\n\n    function acceptRejectionReason(uint _reviewRequestId) public {\n        // Fetch the request using the ID\n        MilestoneReviewRequest storage reviewRequest = milestoneReviewRequests[_reviewRequestId];\n        \n        // Check if the request exists and if it is not already reviewed\n        require(reviewRequest.freelancer == msg.sender, \"Only the freelancer can accept the rejection reason\");\n        require(!reviewRequest.reviewed, \"Review request already reviewed\");\n\n        // Accept the rejection reason and mark the request as reviewed\n        reviewRequest.reviewed = true;\n\n        // Emit an event for this action (optional)\n        emit RejectionReasonAccepted(_reviewRequestId);\n    }\n\n\n    function viewAcceptedProjectsByFreelancer(address freelancer) public view returns (\n        uint[] memory ids, \n        string[] memory names, \n        string[] memory descriptions, \n        uint[] memory rewards, \n        Projects.Status[] memory statuses, // Change here to use Projects.Status\n        address[] memory employers\n    ) {\n        // Temporary storage for matched projects\n        uint[] memory tempIds = new uint[](requestCount); \n        string[] memory tempNames = new string[](requestCount);\n        string[] memory tempDescriptions = new string[](requestCount);\n        uint[] memory tempRewards = new uint[](requestCount);\n        Projects.Status[] memory tempStatuses = new Projects.Status[](requestCount); // Change here to use Projects.Status\n        address[] memory tempEmployers = new address[](requestCount);\n\n        uint matchCount = 0; // Count of matched projects\n\n        for (uint i = 1; i <= requestCount; i++) {\n            Request storage req = requests[i];\n            if (req.status == RequestStatus.Accepted && req.freelancer == freelancer) {\n                // Unpack the return values from getProject\n                (uint id, string memory name, string memory description, uint reward, Projects.Status status, address employer) = \n                    projectsContract.getProject(req.projectId); // Call the function\n                \n                // Assign the unpacked values to temporary storage\n                tempIds[matchCount] = id;\n                tempNames[matchCount] = name;\n                tempDescriptions[matchCount] = description;\n                tempRewards[matchCount] = reward;\n                tempStatuses[matchCount] = status;\n                tempEmployers[matchCount] = employer;\n                matchCount++;\n            }\n        }\n\n        // Create memory arrays of the exact size of matches found\n        ids = new uint[](matchCount);\n        names = new string[](matchCount);\n        descriptions = new string[](matchCount);\n        rewards = new uint[](matchCount);\n        statuses = new Projects.Status[](matchCount); // Change here to use Projects.Status\n        employers = new address[](matchCount);\n\n        for (uint j = 0; j < matchCount; j++) {\n            ids[j] = tempIds[j];\n            names[j] = tempNames[j];\n            descriptions[j] = tempDescriptions[j];\n            rewards[j] = tempRewards[j];\n            statuses[j] = tempStatuses[j];\n            employers[j] = tempEmployers[j];\n        }\n\n        return (ids, names, descriptions, rewards, statuses, employers);\n    }\n    \n\n    function addFile(\n        uint _milestoneId, \n        string memory _name, \n        string memory _rid, \n        string memory _cid\n    ) public {\n        // Create a new File struct with a unique ID and add it to the milestoneFiles map\n        File memory newFile = File({\n            id: fileCount, // unique global ID for each file\n            milestoneId: _milestoneId,\n            name: _name,\n            rid: _rid,\n            cid: _cid\n        });\n        \n        milestoneFiles[_milestoneId].push(newFile); // Add file to the array for the specific milestone\n        fileCount++; // Increment the global file count\n    }\n\n    function viewAllFilesForMilestone(uint _milestoneId) \n        public \n        view \n        returns (\n            uint[] memory ids,\n            uint[] memory milestoneIds,\n            string[] memory names,\n            string[] memory rids,\n            string[] memory cids\n        ) \n    {\n        uint count = fileCount; // Assuming 'fileCount' keeps track of the total files added\n\n        // Initialize arrays based on the total file count for the specified milestone\n        ids = new uint[](count);\n        milestoneIds = new uint[](count);\n        names = new string[](count);\n        rids = new string[](count);\n        cids = new string[](count);\n\n        // Populate the arrays with file details for the given milestone\n        uint index = 0;\n        for (uint i = 0; i < count; i++) {\n            if (milestoneFiles[_milestoneId][i].milestoneId == _milestoneId) {\n                File storage file = milestoneFiles[_milestoneId][i];\n                ids[index] = file.id;\n                milestoneIds[index] = file.milestoneId;\n                names[index] = file.name;\n                rids[index] = file.rid;\n                cids[index] = file.cid;\n                index++;\n            }\n        }\n\n        return (ids, milestoneIds, names, rids, cids);\n    }\n\n\n}\n",
-  "sourcePath": "C:\\Users\\Shashwat Chaturvedi\\OneDrive - iiit-b\\college\\projects\\delance\\delance_test2\\contracts\\RequestManager.sol",
+  "sourcePath": "C:\\Users\\Shashwat Chaturvedi\\OneDrive - iiit-b\\college\\projects\\delance\\truffle_project\\contracts\\RequestManager.sol",
   "ast": {
     "absolutePath": "project:/contracts/RequestManager.sol",
     "exportedSymbols": {
@@ -27359,23 +26608,9 @@
     "name": "solc",
     "version": "0.8.28+commit.7893614a.Emscripten.clang"
   },
-  "networks": {
-    "5777": {
-      "events": {},
-      "links": {},
-      "address": "0xcb183986C05298Fd7030Dd9661D3790C2A949389",
-      "transactionHash": "0xb496eef53c88881b05eb5bce566336d45a2db3f0d3f86ee8883b7c097d94de49"
-    },
-    "11155111": {
-      "events": {},
-      "links": {},
-      "address": "0xC54D34Cce74dE06d5556308Fe8AA94a17bA1a7A2",
-      "transactionHash": "0xaf4bafcfd62a095a0265b7cac913c70525ea66e1c41c913fbd456de791a98531"
-    }
-  },
+  "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-11-03T01:55:38.460Z",
-  "networkType": "ethereum",
+  "updatedAt": "2024-11-09T14:18:22.462Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

@@ -18,49 +18,88 @@ function Auth() {
     }
   };
 
+  // const handleLogin = () => {
+  //   if (!selectedAccount || !role) {
+  //     alert('Please select an account and role to continue');
+  //     return;
+  //   }
+
+  //   // Check for conflicting roles
+  //   const storedRole = localStorage.getItem(selectedAccount);
+
+  //   if(!storedRole){
+  //     // Save account and role if there's no conflict
+  //     localStorage.setItem(selectedAccount, role);
+  //     localStorage.setItem('selectedAccount', selectedAccount);
+  //     localStorage.setItem('role', role);
+
+  //     if (role === 'client') {
+  //       navigate('/client');
+  //     } else if (role === 'freelancer') {
+  //       setFreelancerRating(selectedAccount, 0);
+  //       navigate('/freelancer');
+  //     }
+  //   }
+  //   else if (storedRole){
+  //     // // Save account and role if there's no conflict
+  //     localStorage.setItem(selectedAccount, role);
+  //     localStorage.setItem('selectedAccount', selectedAccount);
+  //     //localStorage.setItem('role', role);
+  //     if(storedRole !== role) {
+  //       setErrorMessage(`This account is already registered as a ${storedRole}.`);
+  //       return;
+  //     }
+  //     else{
+
+  //       if (role === 'client') {
+  //         navigate('/client');
+  //       } else if (role === 'freelancer') {
+  //         navigate('/freelancer');
+  //       }
+  //     }
+  //   }
+
+    
+  // };
   const handleLogin = () => {
     if (!selectedAccount || !role) {
       alert('Please select an account and role to continue');
       return;
     }
-
-    // Check for conflicting roles
+  
+    // Check for existing role in localStorage
     const storedRole = localStorage.getItem(selectedAccount);
-
-    if(!storedRole){
-      // Save account and role if there's no conflict
+  
+    if (!storedRole) {
+      // First-time login: set account and role
       localStorage.setItem(selectedAccount, role);
       localStorage.setItem('selectedAccount', selectedAccount);
       localStorage.setItem('role', role);
-
+  
       if (role === 'client') {
         navigate('/client');
       } else if (role === 'freelancer') {
         setFreelancerRating(selectedAccount, 0);
         navigate('/freelancer');
       }
-    }
-    else if (storedRole){
-      // Save account and role if there's no conflict
-      localStorage.setItem(selectedAccount, role);
-      localStorage.setItem('selectedAccount', selectedAccount);
-      localStorage.setItem('role', role);
-      if(storedRole !== role) {
-        setErrorMessage(`This account is already registered as a ${storedRole}.`);
-        return;
-      }
-      else{
-
+    } else {
+      // Returning user
+      if (storedRole === role) {
+        // Correct role: update selected account and navigate
+        localStorage.setItem('selectedAccount', selectedAccount);
+  
         if (role === 'client') {
           navigate('/client');
         } else if (role === 'freelancer') {
           navigate('/freelancer');
         }
+      } else {
+        // Role conflict: show error message
+        setErrorMessage(`This account is already registered as a ${storedRole}.`);
       }
     }
-
-    
   };
+  
 
   useEffect(() => {
     fetchAccounts();
