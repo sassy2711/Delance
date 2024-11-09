@@ -2,8 +2,8 @@ import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json';
 import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
-const PROJECTS_CONTRACT_ADDRESS = '0xC0E05343e3CE6B07aBdD0E0ce8fDbad896dE29B0';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xE90F82B0F2753ee8668EbA568073D37FBa984e44';
+const PROJECTS_CONTRACT_ADDRESS = '0xf1299e585879d42Bea4F807ecBC69b799aE73C1d';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xAbB13fa82D62D50B8E0891eE23C21d8273f817fc';
 
 export const connectWallet = async () => {
   if (window.ethereum) {
