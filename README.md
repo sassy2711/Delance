@@ -57,7 +57,7 @@ To run this project, ensure you have the following installed:
 
 1. **Clone the Repository**:
    ```bash
-   [git clone https://github.com/yourusername/Delance.git](https://github.com/sassy2711/Delance.git)
+   https://github.com/sassy2711/Delance.git
    cd Delance
 
 2. **Install MetaMask**:
