@@ -2,8 +2,9 @@ import Web3 from 'web3';
 import ProjectsContract from '../contracts/Projects.json'; 
 import RequestManagerContract from '../contracts/RequestManager.json';
 import { verifyIPFSFile, downloadFileFromIPFS } from './ipfs';
-const PROJECTS_CONTRACT_ADDRESS = '0xf1299e585879d42Bea4F807ecBC69b799aE73C1d';
-const REQUEST_MANAGER_CONTRACT_ADDRESS = '0xAbB13fa82D62D50B8E0891eE23C21d8273f817fc';
+const PROJECTS_CONTRACT_ADDRESS = '0x1c3bcE3dB6460931BFC987b908BF3b1cd2ffcDE9';
+const REQUEST_MANAGER_CONTRACT_ADDRESS = '0x793D78c5D43fE69A9606b176d9A36f560A3eEA0f';
+//const KLEROS_CONTRACT_ADDRESS = '0x7d88a1E4Ad904dE3A3B7eDC8A94c567E80b05979';
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -138,7 +139,7 @@ export const fetchUserProjects = async (selectedAccount) => {
     const employers = projectData[5];
     // Map the arrays to create an array of project objects and filter by employer
     const projects = ids.map((id, index) => ({
-      id: id.toString(), // Convert BigInt to string if needed
+      id: id, // Convert BigInt to string if needed
       title: names[index],
       description: descriptions[index],
       reward: rewards[index], // Convert BigInt to string if needed
@@ -305,7 +306,7 @@ export const fetchRequestsByProjectId = async (projectId) => {
     // Map the requests into an array of objects and filter by projectId
     const statusEnum = ["Pending", "Approved", "Rejected"];
     const filteredRequests = requestIds.map((id, index) => ({
-      requestId: id,
+      requestId: id.toString(),
       projectId: projectIds[index].toString(),
       freelancer: freelancers[index],
       freelancerRating: freelancerRatings[index].toString(),
@@ -413,8 +414,9 @@ export const downloadFilesForMilestone = async (milestoneId) => {
     
     // Call the smart contract function to get all files for the milestone
     const contract = await getRequestManagerContract();
+    console.log(2);
     const result = await contract.methods.viewAllFilesForMilestone(milestoneId).call();
-    
+    console.log(3);
     // Destructure the result
     const ids = result[0];
     const names = result[2];
@@ -422,11 +424,12 @@ export const downloadFilesForMilestone = async (milestoneId) => {
     console.log(`Number of files to download: ${ids.length}`);
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+    console.log(1);
     // Iterate through the files and download each one
     for (let i = 0; i < ids.length; i++) {
       const cid = cids[i];
       const filename = names[i] || `downloadedFile_${ids[i]}`; // Use the name, or a default if name is empty
+      console.log(i);
       await downloadFileFromIPFS(cid, filename);
       await delay(15000); // Wait before the next download
       // // Verify if the file exists on IPFS
