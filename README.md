@@ -57,8 +57,8 @@ To run this project, ensure you have the following installed:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/freelance-escrow-dapp.git
-   cd freelance-escrow-dapp
+   git clone https://github.com/yourusername/Delance.git
+   cd Delance
 
 2. **Install MetaMask**:
 - Install MetaMask from the [MetaMask website](https://metamask.io/).
