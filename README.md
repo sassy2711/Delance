@@ -51,6 +51,7 @@ To run this project, ensure you have the following installed:
 - **Node.js** and **npm**: Download from [Node.js Official Website](https://nodejs.org/).
 - **MetaMask**: Browser wallet for Ethereum interaction.
 - **QuickNode Account**: Ethereum and IPFS provider, available at [QuickNode](https://www.quicknode.com/).
+- **Ganache Account**: App for test accounts and network.
 
 ## Installation
 
@@ -62,9 +63,15 @@ To run this project, ensure you have the following installed:
 
 ## Compile and Deploy Smart Contracts
 
-- Ensure you have an Ethereum Sepolia testnet account with sufficient test ETH for gas fees.
-- Deploy the smart contracts to Sepolia or your desired Ethereum network.
-- Record the contract address for future reference.
+- Start ganache network.
+- Copy the private key of an account.
+- Go to your metamask wallet.
+- Click on import wallet.
+- Paste the private key.
+- The account is made.
+- Again go on the metamask wallet, connect the account.
+- Refresh  
+
 
 ## Install MetaMask
 
