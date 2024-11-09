@@ -53,55 +53,53 @@ To run this project, ensure you have the following installed:
 - **QuickNode Account**: Ethereum and IPFS provider, available at [QuickNode](https://www.quicknode.com/).
 - **Ganache Account**: App for test accounts and network.
 
-## Installation
+## Installation and Setup
 
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/yourusername/freelance-escrow-dapp.git
    cd freelance-escrow-dapp
 
+2. **Install MetaMask**:
+- Install MetaMask from the [MetaMask website](https://metamask.io/).
 
-## Compile and Deploy Smart Contracts
-
+3. **Connecting MetaMask with ganache**:
 - Start ganache network.
+- Choose new workspace, give whatever name.
+- Click on add project, go to Delance/truffle_project, select the truffle-config.js file and then save the project(in ganache).
 - Copy the private key of an account.
 - Go to your metamask wallet.
+- Click on add account.
 - Click on import wallet.
 - Paste the private key.
 - The account is made.
 - Again go on the metamask wallet, connect the account.
-- Refresh  
+- Refresh at each step just in case.
 
+4. **Compile and Deploy Smart Contracts**:
+- Inside the project directory Delance, go to the truffle project directory.
+  ```bash
+   cd truffle_project
+   truffle migrate
+- Now the contracts should have been deployed on the ganache network(fee deducted from your account is an indicator).
 
-## Install MetaMask
+5. **Copy the JSON files**:
+- Go to Delance/truffle_project/build/contracts.
+- Copy all the files.
+- Go to Delance/src/contracts.
+- Paste the files.
 
-1. Install MetaMask from the [MetaMask website](https://metamask.io/).
-2. Add the Sepolia test network if it's not already configured.
-3. Import your wallet with test ETH for transactions on the Sepolia network.
-
-
-## Configuration
-
-### Environment Variables
-
-1. Create a `.env` file in the root directory of your project.
-2. Add your configuration settings as shown below:
-
-   ```plaintext
-   REACT_APP_ETHEREUM_PROVIDER=<your_ethereum_provider_url>
-   REACT_APP_IPFS_PROVIDER=<your_ipfs_provider_url>
-   REACT_APP_KLEROS_CONTRACT_ADDRESS=<your_kleros_contract_address>
-
-### Setting Up QuickNode
-
-- Sign up at [QuickNode](https://www.quicknode.com/) to get an Ethereum and IPFS endpoint.
-- Add these endpoints to your `.env` file.
-
-### Configure Kleros
-
-- Ensure your smart contract has access to the Kleros contract on the Sepolia test network.
-- Use the `REACT_APP_KLEROS_CONTRACT_ADDRESS` environment variable to specify the Kleros contract address.
-
+7. **Copy the contract addresses in the web3.js file**:
+- In ganache, click on the contracts tab.
+- Click on the "Projects" contract, copy the address of the contract.
+- Go to web3.js, CTRL-F for PROJECTS_CONTRACT_ADDRESS. Paste the address for that variable.
+- Again, in ganache, click on the contracts tab.
+- Click on the "RequestManager" contract, copy the address of the contract.
+- Go to web3.js, CTRL-F for REQUEST_MANAGER_CONTRACT_ADDRESS. Paste the address for that variable.
+- The assignment would look like:
+  Line number 5 of web3.js : const PROJECTS_CONTRACT_ADDRESS = '<Address1>';
+  Line number 6 of web3.js : const REQUEST_MANAGER_CONTRACT_ADDRESS = '<Address2>';
+- So, you have to paste the Projects address in place of <Address1> and the RequestManager address in place of <Address2>.
 
 
 ## Running the Application
@@ -113,8 +111,6 @@ To run this project, ensure you have the following installed:
 ### Open the DApp
 
 - Open your browser and navigate to `http://localhost:3000`.
-- Connect MetaMask to the Sepolia test network to interact with the DApp.
-
 
 
 ## Usage Guide
