@@ -92,11 +92,11 @@ To run this project, ensure you have the following installed:
 7. **Copy the contract addresses in the web3.js file**:
 - In ganache, click on the contracts tab.
 - Click on the "Projects" contract, copy the address of the contract.
-- Go to web3.js, CTRL-F for PROJECTS_CONTRACT_ADDRESS. Paste the address for that variable.
+- Go to Delance/src/services/web3.js, CTRL-F for PROJECTS_CONTRACT_ADDRESS. Paste the address for that variable.
 - Again, in ganache, click on the contracts tab.
 - Click on the "RequestManager" contract, copy the address of the contract.
 - Go to web3.js, CTRL-F for REQUEST_MANAGER_CONTRACT_ADDRESS. Paste the address for that variable.
-- The assignment would look like:
+- The code would look like:
  - Line number 5 of web3.js : const PROJECTS_CONTRACT_ADDRESS = 'Address1';
  - Line number 6 of web3.js : const REQUEST_MANAGER_CONTRACT_ADDRESS = 'Address2';
 - So, you have to paste the Projects address in place of Address1 and the RequestManager address in place of Address2.
