@@ -3,7 +3,7 @@
 We have tried to make a **blockchain-based decentralised web application (DApp)** that allows freelancers and recruiters (clients) to connect on projects with built-in escrow. The recruiter (client) can put their project ideas and set the guidelines for the same. The freelancer can browse through the available projects on the platform and apply for the ones they are interested in. The freelancer will have to upload their files as a proof of work for each milestone that is set by the client.
 
 ## Unique Selling Point: 
-The existing platforms don't have an **automated rating system**. Our platform automates the rating system so as to prevent ratings being abused by malicious actors.
+The existing platforms don't have an **automated rating system**. Our platform automates the rating system so as to **prevent ratings being abused by malicious actors**.
 There also does not exist a comprehensive solution which automates the entire workflow and integrates it with **decentralized arbitration** as we have done. 
 The files are also uploaded on **IPFS** making them available as an **immutable proof** for the arbitrators. We have also **automated the payment of funds** after acceptance of proof of work for each milestone via **escrow contracts**.
 
@@ -11,13 +11,13 @@ The files are also uploaded on **IPFS** making them available as an **immutable 
 
 - Our website begins with asking the user to login/sign up as a client or freelancer.
   
-## Client Side:
+### Client Side:
 - The client dashboard displays details about the client's **Etherium (MetaMask)** account. The client can either add or view projects. For adding a project, the client must fix the reward amount.
 - Client can then split up the work of each project into different milestones. Each milestone specifies the percentage of reward to be transacted upon completion of that milestone by the freelancer.
 - The client can also view all the pending requests that the freelancers might have sent and can either decline or accept. The request contains important details like the freelancers address and rating.
 - If accepted, a new **escrow account** is created, and the total reward is transferred from the client's account to the escrow account. All the future milestone payments are done from this escrow account.
 
-## Freelancer Side:
+### Freelancer Side:
 - The freelancer can view all the projects that are available. Each project contains the necessary details, along with the option of applying for the project and viewing the milestones. Once accepted, the freelancer can start uploading the necessary files as proof for each milestone. Each file is stored on **IPFS** through a **dedicated gateway** (QuickNode Service), and a **CID (Content Identifier)** is generated for the same.
   
 - The client views the proof files submitted by the freelancer for a particular milestone. If the client accepts the submission, the rating of the freelancer will get incremented, and the reward allotted for this milestone will be credited to the freelancer's account. If the client rejects the submission, the freelancer can either accept the rejection and work on it again (rating of freelancer decreases) or call for an **arbitration service (through Kleros)**.
