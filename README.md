@@ -2,6 +2,11 @@
 
 We have tried to make a **blockchain-based decentralised web application (DApp)** that allows freelancers and recruiters (clients) to connect on projects with built-in escrow. The recruiter (client) can put their project ideas and set the guidelines for the same. The freelancer can browse through the available projects on the platform and apply for the ones they are interested in. The freelancer will have to upload their files as a proof of work for each milestone that is set by the client.
 
+## Unique Selling Point: 
+The existing platforms don't have an automated rating system. Our platform automates the rating system so as to prevent ratings being abused by malicious actors.
+There also does not exist a comprehensive solution which automates the entire workflow and integrates it with decentralized arbitration as we have done. 
+The files are also uploaded on IPFS making them available as an immutable proof for the arbitrators.
+
 - Our website begins with asking the user to login/sign up as a client or freelancer.
   
 ## Client Side:
