@@ -7,6 +7,8 @@ The existing platforms don't have an automated rating system. Our platform autom
 There also does not exist a comprehensive solution which automates the entire workflow and integrates it with decentralized arbitration as we have done. 
 The files are also uploaded on IPFS making them available as an immutable proof for the arbitrators.
 
+## Workflow:
+
 - Our website begins with asking the user to login/sign up as a client or freelancer.
   
 ## Client Side:
@@ -117,39 +119,6 @@ To run this project, ensure you have the following installed:
 ### Open the DApp
 
 - Open your browser and navigate to `http://localhost:3000`.
-
-
-## Usage Guide
-
-### Client Workflow
-
-1. **Log in and Create a Project**:
-   - After logging in, the client can create a project by providing details such as the project name, description, milestones, and payment structure.
-   - Submit the project to list it on the platform, making it available for freelancers to view and accept.
-
-2. **Review Freelancer Submissions**:
-   - Track project progress as freelancers submit their work at each milestone.
-   - Upon submission, the client has the option to:
-     - **Accept the submission** for full or reduced payment (in cases of delayed milestones).
-     - **Reject the submission** and provide feedback with comments for required modifications.
-   - The system automatically adjusts ratings and updates payment records based on the client's acceptance or rejection.
-
-### Freelancer Workflow
-
-1. **Log in and Browse Available Projects**:
-   - Once logged in, freelancers can browse through a list of projects posted by clients.
-   - Select and accept a project to start working on it.
-
-2. **Accept the Project** and begin working on the specified milestones.
-
-3. **Submit Files** at each milestone:
-   - Complete the work for each milestone and submit the required files to the client through the platform.
-   - Wait for client feedback on the submitted work.
-
-4. **Resolve Feedback**:
-   - If the client requests modifications, the freelancer can:
-     - Revise the work and resubmit until the client accepts.
-     - Raise a dispute if they disagree with the client’s feedback, initiating Kleros arbitration for resolution.
 
 ### Dispute Resolution
 
