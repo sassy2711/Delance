@@ -15,6 +15,9 @@ We have tried to make a **blockchain-based decentralised web application (DApp)*
   
 - The client views the proof files submitted by the freelancer for a particular milestone. If the client accepts the submission, the rating of the freelancer will get incremented, and the reward allotted for this milestone will be credited to the freelancer's account. If the client rejects the submission, the freelancer can either accept the rejection and work on it again (rating of freelancer decreases) or call for an **arbitration service (through Kleros)**.
 
+- The web application works smoothly on localhost (utilizing Ganache Etherum accounts). The contracts have also been deployed on Sepolia public testnet, through an Etherum RPC Endpoint. 
+
+
 ## Features
 
 1. **Client Project Posting**: Clients can create project requests with:
